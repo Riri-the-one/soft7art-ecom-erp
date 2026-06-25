@@ -32,27 +32,9 @@ class Order extends Model
     }
 
     // Possède un historique de modifications
-    public function activityLogs()
+    public function activities()
     {
-        return $this->hasMany(OrderActivityLog::class);
-    }
-
-    // --- LES MÉTHODES MÉTIER ---
-    
-    // Change le statut et crée automatiquement le log d'activité
-    public function updateStatus(string $newStatus, int $userId): void
-    {
-        $oldStatus = $this->status;
-        
-        // 1. On met à jour la commande
-        $this->status = $newStatus;
-        $this->save();
-
-        // 2. On crée la trace dans l'historique
-        $this->activityLogs()->create([
-            'user_id' => $userId,
-            'old_status' => $oldStatus,
-            'new_status' => $newStatus,
-        ]);
+        // On cible bien OrderActivity et on ajoute latest() pour avoir les plus récents en premier
+        return $this->hasMany(OrderActivity::class)->latest();
     }
 }

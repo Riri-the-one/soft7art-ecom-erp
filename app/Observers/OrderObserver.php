@@ -21,6 +21,21 @@ class OrderObserver
                 'old_status' => $order->getOriginal('status'),
                 'new_status' => $order->status,
             ]);
+
+            $oldStatus = $order->getOriginal('status');
+            $newStatus = $order->status;
+
+            if ($newStatus === 'confirmed' && $oldStatus !== 'confirmed') {
+                foreach ($order->products as $product) {
+                    $product->decrement('stock_quantity', $product->pivot->quantity);
+                }
+            }
+
+            if (in_array($newStatus, ['canceled', 'returned']) && in_array($oldStatus, ['confirmed', 'shipped', 'delivered'])) {
+                foreach ($order->products as $product) {
+                    $product->increment('stock_quantity', $product->pivot->quantity);
+                }
+            }
         }
     }
 

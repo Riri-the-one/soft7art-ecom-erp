@@ -19,6 +19,7 @@
                                     <th class="p-3 font-bold text-gray-600">Email</th>
                                     <th class="p-3 font-bold text-gray-600">Telephone</th>
                                     <th class="p-3 font-bold text-gray-600 text-center">Commandes</th>
+                                    <th class="p-3 font-bold text-gray-600 text-center">Taux de Livraison</th>
                                     <th class="p-3 font-bold text-gray-600 text-right">Total Depense</th>
                                 </tr>
                             </thead>
@@ -33,13 +34,24 @@
                                                 {{ $customer->orders_count }}
                                             </span>
                                         </td>
+                                        <td class="p-3 text-center">
+                                            @if ($customer->delivery_rate < 50)
+                                                <span class="text-red-600 font-bold">{{ $customer->delivery_rate }}%</span>
+                                                <span class="ml-2 inline-flex items-center px-2 py-0.5 bg-red-100 text-red-700 rounded-full text-xs font-semibold">Risque élevé</span>
+                                            @elseif ($customer->delivery_rate < 80)
+                                                <span class="text-orange-500">{{ $customer->delivery_rate }}%</span>
+                                            @else
+                                                <span class="text-green-600 font-bold">{{ $customer->delivery_rate }}%</span>
+                                                <span class="ml-2 inline-flex items-center px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-xs font-semibold">Client sérieux</span>
+                                            @endif
+                                        </td>
                                         <td class="p-3 text-right font-bold text-indigo-600">
                                             {{ number_format($customer->orders->sum('total_amount'), 2, ',', ' ') }} DH
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="p-6 text-center text-gray-500 font-medium">
+                                        <td colspan="6" class="p-6 text-center text-gray-500 font-medium">
                                             Aucun client trouvé dans la base de donnees.
                                         </td>
                                     </tr>

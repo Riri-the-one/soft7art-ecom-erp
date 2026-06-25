@@ -19,13 +19,15 @@ class Customer extends Model
         return $this->hasMany(Order::class);
     }
 
-    // Méthode pour calculer le taux de livraison (à implémenter plus tard avec de vraies données)
-    public function getDeliveryRate(): float
+    public function getDeliveryRateAttribute(): int
     {
-        $totalOrders = $this->orders()->count();
-        if ($totalOrders === 0) return 0.0;
+        $total = $this->orders()->count();
+        if ($total === 0) {
+            return 0;
+        }
 
-        $deliveredOrders = $this->orders()->where('status', 'delivered')->count();
-        return ($deliveredOrders / $totalOrders) * 100;
+        $delivered = $this->orders()->where('status', 'delivered')->count();
+
+        return round(($delivered / $total) * 100, 0);
     }
 }

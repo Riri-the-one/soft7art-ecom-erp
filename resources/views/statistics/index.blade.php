@@ -42,12 +42,17 @@
                 </div>
             </div>
 
+            <div class="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm mt-8">
+                <h3 class="text-lg font-semibold text-gray-800 mb-6">Évolution des commandes</h3>
+                <canvas id="ordersChart" height="100"></canvas>
+            </div>
+
             <div class="grid grid-cols-1 gap-6 mb-8">
-                <div class="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+                <a href="{{ route('products.index', ['alert' => 'true']) }}" class="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
                     <p class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Produits en alerte</p>
-                    <p class="text-3xl font-extrabold text-gray-900 tracking-tight">{{ $lowStockProducts }}</p>
+                    <p class="text-3xl text-red-600 font-bold tracking-tight">{{ $lowStockProducts }}</p>
                     <p class="mt-3 text-sm text-gray-500">Produits avec un stock inférieur à 10 unités.</p>
-                </div>
+                </a>
             </div>
 
             <div class="mt-8">
@@ -57,4 +62,39 @@
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('ordersChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: @json($chartLabels),
+                datasets: [{
+                    label: 'Commandes',
+                    data: @json($chartData),
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    fill: true,
+                    tension: 0.3,
+                }],
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1,
+                        },
+                    },
+                },
+            },
+        });
+    </script>
 </x-app-layout>

@@ -43,6 +43,30 @@
                                 </select>
                             </div>
 
+                            <!-- Date de début -->
+                            <div class="flex-1 min-w-xs">
+                                <label for="date_from" class="block text-sm font-medium text-gray-700 mb-2">Du</label>
+                                <input
+                                    type="date"
+                                    name="date_from"
+                                    id="date_from"
+                                    value="{{ request('date_from') }}"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                >
+                            </div>
+
+                            <!-- Date de fin -->
+                            <div class="flex-1 min-w-xs">
+                                <label for="date_to" class="block text-sm font-medium text-gray-700 mb-2">Au</label>
+                                <input
+                                    type="date"
+                                    name="date_to"
+                                    id="date_to"
+                                    value="{{ request('date_to') }}"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                >
+                            </div>
+
                             <!-- Boutons d'action -->
                             <div class="flex flex-wrap gap-2 items-end">
                                 <a 
@@ -84,17 +108,23 @@
     // Récupération des champs de recherche et filtrage
     const searchInput = document.getElementById('search');
     const statusSelect = document.getElementById('status');
+    const dateFromInput = document.getElementById('date_from');
+    const dateToInput = document.getElementById('date_to');
     const tableContainer = document.getElementById('table-container');
 
     // Fonction pour effectuer la recherche en direct
     const performSearch = debounce(async function() {
         const searchValue = searchInput.value;
         const statusValue = statusSelect.value;
+        const dateFromValue = dateFromInput.value;
+        const dateToValue = dateToInput.value;
 
         try {
             const response = await fetch('{{ route("orders.index") }}?' + new URLSearchParams({
                 search: searchValue,
-                status: statusValue
+                status: statusValue,
+                date_from: dateFromValue,
+                date_to: dateToValue
             }), {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
@@ -113,4 +143,6 @@
     // Écoute de l'événement input sur les champs de recherche et statut
     searchInput.addEventListener('input', performSearch);
     statusSelect.addEventListener('change', performSearch);
+    dateFromInput.addEventListener('change', performSearch);
+    dateToInput.addEventListener('change', performSearch);
 </script>

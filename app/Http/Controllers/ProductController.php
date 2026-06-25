@@ -9,10 +9,14 @@ class ProductController extends Controller
 {
     public function index()
     {
-        // On récupère les produits par pages de 10
-        $products = Product::paginate(10);
-        
-        // On renvoie la vue en lui passant les données
+        $query = Product::query();
+
+        if (request('alert') == 'true') {
+            $query->where('stock_quantity', '<', 10);
+        }
+
+        $products = $query->paginate(10)->withQueryString();
+
         return view('products.index', compact('products'));
     }
 

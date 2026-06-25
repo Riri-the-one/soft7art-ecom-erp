@@ -40,12 +40,10 @@ class DatabaseSeeder extends Seeder
 
         // 3. Génération de 30 commandes aléatoires avec des produits à l'intérieur
         foreach (range(1, 30) as $i) {
-            $order = Order::create([
+            $order = Order::factory()->create([
                 'customer_id' => $customers->random()->id,
-                'user_id' => $agent->id, // C'est l'agent qui saisit les commandes
-                'status' => fake()->randomElement(['pending', 'confirmed', 'shipped', 'delivered', 'canceled']),
-                'delivery_fee' => 30.00,
-                'total_amount' => 0, // On le calcule juste en dessous
+                'user_id' => $agent->id,
+                'total_amount' => 0,
             ]);
 
             // On prend entre 1 et 4 produits au hasard dans le catalogue

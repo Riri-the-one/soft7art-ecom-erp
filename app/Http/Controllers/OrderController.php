@@ -28,6 +28,14 @@ class OrderController extends Controller
             $query->where('status', $request->status);
         }
 
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
         $orders = $query->paginate(10)->withQueryString();
 
         if ($request->ajax()) {

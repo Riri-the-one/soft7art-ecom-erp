@@ -25,7 +25,8 @@ class StatisticController extends Controller
         $ordersQuery->when($filter === 'today', fn($q) => $q->whereDate('created_at', Carbon::today()));
         $ordersQuery->when($filter === 'week', fn($q) => $q->where('created_at', '>=', Carbon::now()->startOfWeek()));
         $ordersQuery->when($filter === 'month', fn($q) => $q->where('created_at', '>=', Carbon::now()->startOfMonth()));
-        $totalOrders = $ordersQuery->count();
+        $orders = $ordersQuery->get();
+        $totalOrders = $orders->count();
 
         // Bénéfice net (commandes livrées)
         $netProfitQuery = Order::where('status', 'delivered');
@@ -57,6 +58,10 @@ class StatisticController extends Controller
         // Produits en faible stock (global)
         $lowStockProducts = Product::where('stock_quantity', '<', 10)->count();
 
-        return view('statistics.index', compact('totalRevenue', 'totalOrders', 'pendingOrders', 'lowStockProducts', 'netProfit', 'filter'));
+        $ordersByDate = $orders->groupBy(fn ($order) => $order->created_at->format('Y-m-d'))->sortKeys();
+        $chartLabels = $ordersByDate->keys()->values()->all();
+        $chartData = $ordersByDate->map->count()->values()->all();
+
+        return view('statistics.index', compact('totalRevenue', 'totalOrders', 'pendingOrders', 'lowStockProducts', 'netProfit', 'chartLabels', 'chartData', 'filter'));
     }
 }

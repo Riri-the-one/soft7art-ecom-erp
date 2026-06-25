@@ -1,0 +1,49 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Product;
+use Illuminate\Http\Request;
+
+class ProductController extends Controller
+{
+    public function index()
+    {
+        // On récupère les produits par pages de 10
+        $products = Product::paginate(10);
+        
+        // On renvoie la vue en lui passant les données
+        return view('products.index', compact('products'));
+    }
+
+    public function alerts()
+    {
+        $products = Product::where('stock_quantity', '<', 10)->get();
+        return view('products.alerts', compact('products'));
+    }
+
+    // ... garde la méthode index() existante ...
+
+    public function create()
+{
+    return view('products.create');
+}
+
+public function store(Request $request)
+{
+    // 1. Validation stricte des données selon les règles métier
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'purchase_price' => 'required|numeric|min:0',
+        'selling_price' => 'required|numeric|min:0',
+        'stock_quantity' => 'required|integer|min:0',
+    ]);
+
+    // 2. Création du produit dans la base de données
+    \App\Models\Product::create($validated);
+
+    // 3. Redirection vers le catalogue avec un message de succès
+    return redirect()->route('products.index')->with('success', 'Produit ajouté au catalogue avec succès !');
+}
+}

@@ -33,7 +33,9 @@
                                     <th class="p-3 font-bold text-gray-600">Prix d'achat</th>
                                     <th class="p-3 font-bold text-gray-600">Prix de vente</th>
                                     <th class="p-3 font-bold text-gray-600">En Stock</th>
-                                    <th class="p-3 font-bold text-gray-600">Actions</th>
+                                    @if(Auth::user()->hasRole('stock_manager') || Auth::user()->hasRole('super_admin'))
+                                        <th class="p-3 font-bold text-gray-600">Actions</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -54,13 +56,13 @@
                                                 </span>
                                             @endif
                                         </td>
-                                        <td class="p-3">
-                                            @if(Auth::user()->hasRole('stock_manager') || Auth::user()->hasRole('super_admin'))
+                                        @if(Auth::user()->hasRole('stock_manager') || Auth::user()->hasRole('super_admin'))
+                                            <td class="p-3">
                                                 <a href="{{ route('products.edit', $product) }}" class="inline-flex items-center px-3 py-1 bg-indigo-600 text-white text-sm rounded hover:bg-indigo-700 transition">
                                                     Modifier
                                                 </a>
-                                            @endif
-                                        </td>
+                                            </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             </tbody>

@@ -9,7 +9,12 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-6">Liste des Clients</h3>
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-semibold text-gray-800">Liste des Clients</h3>
+                        <a href="{{ route('customers.create') }}" class="px-4 py-2 bg-blue-600 text-white font-medium rounded-md text-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            Nouveau Client
+                        </a>
+                    </div>
 
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
@@ -21,6 +26,7 @@
                                     <th class="p-3 font-bold text-gray-600 text-center">Commandes</th>
                                     <th class="p-3 font-bold text-gray-600 text-center">Taux de Livraison</th>
                                     <th class="p-3 font-bold text-gray-600 text-right">Total Depense</th>
+                                    <th class="p-3 font-bold text-gray-600 text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -48,10 +54,15 @@
                                         <td class="p-3 text-right font-bold text-indigo-600">
                                             {{ number_format($customer->orders->sum('total_amount'), 2, ',', ' ') }} DH
                                         </td>
+                                        <td class="p-3 text-center">
+                                            <a href="{{ route('customers.show', $customer) }}" class="inline-flex items-center text-xs bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition">
+                                                Détails
+                                            </a>
+                                        </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="p-6 text-center text-gray-500 font-medium">
+                                        <td colspan="7" class="p-6 text-center text-gray-500 font-medium">
                                             Aucun client trouvé dans la base de donnees.
                                         </td>
                                     </tr>

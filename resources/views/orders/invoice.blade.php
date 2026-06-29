@@ -29,9 +29,9 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
             border-bottom: 3px solid #2563eb;
-            padding-bottom: 20px;
+            padding-bottom: 15px;
         }
 
         .company-info h1 {
@@ -70,7 +70,7 @@
         .content {
             display: flex;
             gap: 40px;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
         }
 
         .section {
@@ -78,18 +78,18 @@
         }
 
         .section h3 {
-            font-size: 12px;
+            font-size: 11px;
             text-transform: uppercase;
             color: #2563eb;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             font-weight: bold;
             letter-spacing: 1px;
         }
 
         .section p {
-            font-size: 13px;
-            margin-bottom: 5px;
-            line-height: 1.8;
+            font-size: 12px;
+            margin-bottom: 3px;
+            line-height: 1.5;
         }
 
         .section p strong {
@@ -181,6 +181,11 @@
             font-size: 12px;
             color: #666;
         }
+
+        .unbreakable {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
     </style>
 </head>
 <body>
@@ -202,28 +207,33 @@
         </div>
 
         <!-- Client & Date Information -->
-        <div class="content">
-            <div class="section">
-                <h3>Facturer à :</h3>
-                <p>
-                    <strong>{{ $order->customer->name ?? 'Client' }}</strong>
-                    {{ $order->customer->email ?? '' }}<br>
-                    {{ $order->customer->phone ?? '' }}<br>
-                    {{ $order->customer->address ?? '' }}<br>
-                    {{ $order->customer->postal_code ?? '' }} {{ $order->customer->city ?? '' }}
-                </p>
-            </div>
-
-            <div class="section">
-                <h3>Informations de la commande :</h3>
-                <p>
-                    <strong>Commande du :</strong> {{ $order->created_at->format('d/m/Y à H:i') }}<br>
-                    <strong>Agent :</strong> {{ $order->user->name ?? 'N/A' }}<br>
-                    <strong>Statut :</strong> {{ ucfirst($order->status) }}<br>
-                    <strong>Montant :</strong> {{ number_format($order->total_amount, 2, ',', ' ') }} DH
-                </p>
-            </div>
-        </div>
+        <table style="width: 100%; margin-bottom: 20px;">
+            <tr>
+                <td style="width: 50%; vertical-align: top; padding-right: 20px;">
+                    <div class="section">
+                        <h3>Facturer à :</h3>
+                        <p>
+                            <strong>{{ $order->customer->name ?? 'Client' }}</strong>
+                            {{ $order->customer->email ?? '' }}<br>
+                            {{ $order->customer->phone ?? '' }}<br>
+                            {{ $order->customer->address ?? '' }}<br>
+                            {{ $order->customer->postal_code ?? '' }} {{ $order->customer->city ?? '' }}
+                        </p>
+                    </div>
+                </td>
+                <td style="width: 50%; vertical-align: top; padding-left: 20px;">
+                    <div class="section">
+                        <h3>Informations de la commande :</h3>
+                        <p>
+                            <strong>Commande du :</strong> {{ $order->created_at->format('d/m/Y à H:i') }}<br>
+                            <strong>Agent :</strong> {{ $order->user->name ?? 'N/A' }}<br>
+                            <strong>Statut :</strong> {{ ucfirst($order->status) }}<br>
+                            <strong>Montant :</strong> {{ number_format($order->total_amount, 2, ',', ' ') }} DH
+                        </p>
+                    </div>
+                </td>
+            </tr>
+        </table>
 
         <!-- Products Table -->
         <table>
@@ -250,30 +260,25 @@
                     </tr>
                 @endforeach
             </tbody>
+            <tfoot>
+                <tr style="page-break-inside: avoid;">
+                    <td colspan="3" class="text-right" style="padding-top: 20px;">Sous-total :</td>
+                    <td class="text-right" style="padding-top: 20px;">{{ number_format($order->total_amount, 2, ',', ' ') }} DH</td>
+                </tr>
+                <tr style="page-break-inside: avoid;">
+                    <td colspan="3" class="text-right">Frais de livraison :</td>
+                    <td class="text-right">0,00 DH</td>
+                </tr>
+                <tr style="page-break-inside: avoid;">
+                    <td colspan="3" class="text-right">Taxe (TVA) :</td>
+                    <td class="text-right">Incluse</td>
+                </tr>
+                <tr style="border-top: 2px solid #2563eb; border-bottom: 2px solid #2563eb; page-break-inside: avoid;">
+                    <td colspan="3" class="text-right" style="font-weight: bold; font-size: 16px; color: #2563eb; padding: 15px 0;">MONTANT TOTAL TTC :</td>
+                    <td class="text-right" style="font-weight: bold; font-size: 16px; color: #2563eb; padding: 15px 0;">{{ number_format($order->total_amount, 2, ',', ' ') }} DH</td>
+                </tr>
+            </tfoot>
         </table>
-
-        <!-- Summary -->
-        <div class="summary">
-            <div class="summary-row">
-                <span class="summary-label">Sous-total :</span>
-                <span class="summary-value">{{ number_format($order->total_amount, 2, ',', ' ') }} DH</span>
-            </div>
-
-            <div class="summary-row">
-                <span class="summary-label">Frais de livraison :</span>
-                <span class="summary-value">0,00 DH</span>
-            </div>
-
-            <div class="summary-row">
-                <span class="summary-label">Taxe (TVA) :</span>
-                <span class="summary-value">Incluse</span>
-            </div>
-
-            <div class="summary-row total">
-                <span>MONTANT TOTAL TTC :</span>
-                <span>{{ number_format($order->total_amount, 2, ',', ' ') }} DH</span>
-            </div>
-        </div>
 
         <!-- Footer -->
         <div class="footer">

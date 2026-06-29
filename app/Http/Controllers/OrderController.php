@@ -53,6 +53,43 @@ class OrderController extends Controller
         return view('orders.show', compact('order'));
     }
 
+    public function create()
+    {
+        $customers = \App\Models\Customer::all();
+        $products = \App\Models\Product::all();
+
+        return view('orders.create', compact('customers', 'products'));
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'customer_id' => 'required|exists:customers,id',
+            'product_id' => 'required|exists:products,id',
+            'quantity' => 'required|integer|min:1',
+            'delivery_fee' => 'required|numeric|min:0',
+        ]);
+
+        $product = \App\Models\Product::find($validated['product_id']);
+        $subtotal = $product->selling_price * $validated['quantity'];
+        $totalAmount = $subtotal + $validated['delivery_fee'];
+
+        $order = \App\Models\Order::create([
+            'customer_id' => $validated['customer_id'],
+            'user_id' => auth()->id(),
+            'status' => 'pending',
+            'delivery_fee' => $validated['delivery_fee'],
+            'total_amount' => $totalAmount,
+        ]);
+
+        $order->products()->attach($validated['product_id'], [
+            'quantity' => $validated['quantity'],
+            'unit_price' => $product->selling_price,
+        ]);
+
+        return redirect()->route('orders.show', $order)->with('success', 'Commande créée avec succès.');
+    }
+
     public function updateStatus(UpdateOrderStatusRequest $request, Order $order)
     {
         $user = auth()->user();

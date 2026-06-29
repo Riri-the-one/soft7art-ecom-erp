@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -44,5 +45,19 @@ public function store(StoreProductRequest $request)
 
     // 3. Redirection vers le catalogue avec un message de succès
     return redirect()->route('products.index')->with('success', 'Produit ajouté au catalogue avec succès !');
+}
+
+public function edit(Product $product)
+{
+    return view('products.edit', compact('product'));
+}
+
+public function update(UpdateProductRequest $request, Product $product)
+{
+    $validated = $request->validated();
+
+    $product->update($validated);
+
+    return redirect()->route('products.index')->with('success', 'Produit mis à jour avec succès !');
 }
 }

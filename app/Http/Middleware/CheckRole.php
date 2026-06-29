@@ -14,7 +14,7 @@ class CheckRole
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next, string $role): Response
+    public function handle(Request $request, Closure $next, ...$roles): Response
     {
         // 1. On vérifie si l'utilisateur est bien connecté (sinon, dehors !)
         if (!Auth::check()) {
@@ -28,12 +28,14 @@ class CheckRole
             return $next($request);
         }
 
-        // 3. On vérifie si l'utilisateur a le rôle spécifique demandé pour cette page
-        if ($user->hasRole($role)) {
-            return $next($request);
+        // 3. On vérifie si l'utilisateur a l'un des rôles spécifiés
+        foreach ($roles as $role) {
+            if ($user->hasRole($role)) {
+                return $next($request);
+            }
         }
 
-        // 4. S'il n'a ni le rôle demandé, ni le rôle admin, on le bloque (Erreur 403)
+        // 4. S'il n'a aucun des rôles demandés, on le bloque (Erreur 403)
         abort(403, 'Accès non autorisé : Vous n\'avez pas les permissions nécessaires.');
     }
 }

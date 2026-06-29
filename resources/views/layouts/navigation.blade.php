@@ -25,7 +25,7 @@
 
                     @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('agent'))
                         <x-nav-link :href="route('customers.index')" :active="request()->routeIs('customers.*')" class="w-full block">
-                            {{ __('Clients CRM') }}
+                            {{ __('Annuaire Clients') }}
                         </x-nav-link>
                     @endif
 

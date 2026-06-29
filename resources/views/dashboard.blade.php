@@ -40,7 +40,7 @@
                                 Gérer les commandes
                             </a>
                             <a href="{{ route('customers.index') }}" class="inline-flex justify-center w-full px-4 py-2 bg-white text-blue-600 border border-blue-600 font-medium rounded-lg text-sm hover:bg-blue-50 transition-colors">
-                                Gérer les clients
+                                Annuaire d'appels
                             </a>
                         </div>
                     </div>

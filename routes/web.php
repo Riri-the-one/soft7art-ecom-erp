@@ -21,17 +21,27 @@ Route::middleware('auth')->group(function () {
     // --- 1. ROUTES DU CATALOGUE ---
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     
-    // Sous-groupe : Seuls le Gestionnaire de stock et le Directeur peuvent ajouter des produits
-    Route::middleware('role:stock_manager')->group(function () {
+    // Sous-groupe : Seuls le Gestionnaire de stock et le Directeur peuvent ajouter/modifier des produits
+    Route::middleware('role:stock_manager,super_admin')->group(function () {
         Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
         Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+        Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
+        Route::patch('/products/{product}', [ProductController::class, 'update'])->name('products.update');
     });
 
-    // --- 2. ROUTES DES COMMANDES (Celle qui manquait) ---
+    // --- 2. ROUTES DES COMMANDES ---
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    
+    // Routes de création de commande (Agent et Admin) - DOIT être AVANT les routes dynamiques
+    Route::middleware('role:agent,super_admin')->group(function () {
+        Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
+        Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+    });
+    
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::get('/orders/{order}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice');
     Route::get('/orders/export/csv', [OrderController::class, 'exportCsv'])->name('orders.export');
+    
     Route::middleware('role:agent')->group(function () {
         Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
     });

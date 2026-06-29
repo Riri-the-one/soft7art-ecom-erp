@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateOrderStatusRequest;
 use App\Mail\OrderConfirmedMail;
 use App\Models\Order;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -52,16 +53,14 @@ class OrderController extends Controller
         return view('orders.show', compact('order'));
     }
 
-    public function updateStatus(Request $request, Order $order)
+    public function updateStatus(UpdateOrderStatusRequest $request, Order $order)
     {
         $user = auth()->user();
         if (!$user || (! $user->hasRole('super_admin') && ! $user->hasRole('agent'))) {
             abort(403, 'Accès non autorisé : rôle insuffisant.');
         }
 
-        $validated = $request->validate([
-            'status' => ['required', 'in:pending,confirmed,shipped,delivered,canceled'],
-        ]);
+        $validated = $request->validated();
 
         $oldStatus = $order->status;
         $newStatus = $validated['status'];

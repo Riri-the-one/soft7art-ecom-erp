@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreProductRequest;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -33,16 +34,10 @@ class ProductController extends Controller
     return view('products.create');
 }
 
-public function store(Request $request)
+public function store(StoreProductRequest $request)
 {
     // 1. Validation stricte des données selon les règles métier
-    $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'description' => 'nullable|string',
-        'purchase_price' => 'required|numeric|min:0',
-        'selling_price' => 'required|numeric|min:0',
-        'stock_quantity' => 'required|integer|min:0',
-    ]);
+    $validated = $request->validated();
 
     // 2. Création du produit dans la base de données
     \App\Models\Product::create($validated);

@@ -42,3 +42,12 @@ php artisan serve
 
 L'application sera accessible à l'adresse http://localhost:8000
 
+## Comptes de Test
+
+La commande de seeding génère automatiquement trois profils pour tester les restrictions d'accès de l'ERP :
+
+| Rôle | Adresse Email | Mot de passe |
+|------|---------------|--------------|
+| Super Administrateur / Directeur | admin@erp.com | password |
+| Agent Commercial | agent@erp.com | password |
+| Gestionnaire de Stock | stock@erp.com | password |

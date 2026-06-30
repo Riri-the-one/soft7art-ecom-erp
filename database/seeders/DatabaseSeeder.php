@@ -7,36 +7,40 @@ use App\Models\User;
 use App\Models\Customer;
 use App\Models\Product;
 use App\Models\Order;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Création de tes 3 comptes employés avec les bons rôles
+        // 1. Création des 3 comptes employés avec les bons rôles et mots de passe sécurisés
         User::factory()->create([
             'name' => 'Directeur Super Admin',
             'email' => 'admin@erp.com',
             'role' => 'super_admin',
-            'password' => bcrypt('password'), // Le mot de passe sera 'password'
+            'password' => Hash::make('password'),
         ]);
 
         $agent = User::factory()->create([
             'name' => 'Agent Commercial',
             'email' => 'agent@erp.com',
             'role' => 'agent',
-            'password' => bcrypt('password'),
+            'password' => Hash::make('password'),
         ]);
 
         User::factory()->create([
             'name' => 'Gestionnaire Stock',
             'email' => 'stock@erp.com',
             'role' => 'stock_manager',
-            'password' => bcrypt('password'),
+            'password' => Hash::make('password'),
         ]);
 
         // 2. Génération de 20 faux clients et 50 faux produits
         $customers = Customer::factory(20)->create();
         $products = Product::factory(50)->create();
+
+        // Liste des statuts pour alimenter dynamiquement les indicateurs des tableaux de bord
+        $statuses = ['pending', 'confirmed', 'shipped', 'delivered', 'canceled'];
 
         // 3. Génération de 30 commandes aléatoires avec des produits à l'intérieur
         foreach (range(1, 30) as $i) {
@@ -44,10 +48,11 @@ class DatabaseSeeder extends Seeder
                 'customer_id' => $customers->random()->id,
                 'user_id' => $agent->id,
                 'total_amount' => 0,
+                'status' => $statuses[array_rand($statuses)], // Assure la diversité pour le calcul des taux de succès
             ]);
 
-            // On prend entre 1 et 4 produits au hasard dans le catalogue
-            $orderProducts = $products->random(rand(1, 4));
+            // Sécurisation : shuffle() et take() garantissent de toujours retourner une collection, même pour 1 seul produit
+            $orderProducts = $products->shuffle()->take(rand(1, 4));
             $totalAmount = 0;
 
             foreach ($orderProducts as $product) {
@@ -64,7 +69,7 @@ class DatabaseSeeder extends Seeder
 
             // On met à jour le prix total de la commande
             $order->update([
-                'total_amount' => $totalAmount + 30.00 // Total produits + livraison
+                'total_amount' => $totalAmount + 30.00 // Total produits + frais de livraison fixes
             ]);
         }
     }

@@ -30,7 +30,9 @@
                             <thead>
                                 <tr class="border-b border-gray-100">
                                     <th class="p-3 font-semibold text-gray-400 text-xs uppercase tracking-wider">Nom du produit</th>
-                                    <th class="p-3 font-semibold text-gray-400 text-xs uppercase tracking-wider">Prix d'achat</th>
+                                    @if(Auth::user()->can('viewPurchasePrice', \App\Models\Product::class))
+                                        <th class="p-3 font-semibold text-gray-400 text-xs uppercase tracking-wider">Prix d'achat</th>
+                                    @endif
                                     <th class="p-3 font-semibold text-gray-400 text-xs uppercase tracking-wider">Prix de vente</th>
                                     <th class="p-3 font-semibold text-gray-400 text-xs uppercase tracking-wider">En Stock</th>
                                     @if(Auth::user()->hasRole('stock_manager') || Auth::user()->hasRole('super_admin'))
@@ -42,7 +44,9 @@
                                 @foreach($products as $product)
                                     <tr class="border-b border-gray-50 hover:bg-gray-50">
                                         <td class="p-3 text-gray-800">{{ $product->name }}</td>
-                                        <td class="p-3 text-gray-700">{{ number_format($product->purchase_price, 2) }} DH</td>
+                                        @can('viewPurchasePrice', $product)
+                                            <td class="p-3 text-gray-700">{{ number_format($product->purchase_price, 2) }} DH</td>
+                                        @endcan
                                         <td class="p-3 text-gray-700">{{ number_format($product->selling_price, 2) }} DH</td>
                                         <td class="p-3">
                                             {{-- Utilisation de ta méthode métier pour l'alerte visuelle --}}

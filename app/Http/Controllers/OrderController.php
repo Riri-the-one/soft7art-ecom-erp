@@ -13,6 +13,8 @@ class OrderController extends Controller
 {
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Order::class);
+
         $query = Order::with(['customer', 'user'])->latest();
 
         // Filtre de recherche par ID commande ou nom client
@@ -48,6 +50,8 @@ class OrderController extends Controller
 
     public function show(Order $order)
     {
+        $this->authorize('view', $order);
+
         $order->load(['products', 'customer', 'user', 'activityLogs.user']);
 
         return view('orders.show', compact('order'));
@@ -92,10 +96,7 @@ class OrderController extends Controller
 
     public function updateStatus(UpdateOrderStatusRequest $request, Order $order)
     {
-        $user = auth()->user();
-        if (!$user || (! $user->hasRole('super_admin') && ! $user->hasRole('agent'))) {
-            abort(403, 'Accès non autorisé : rôle insuffisant.');
-        }
+        $this->authorize('updateStatus', $order);
 
         $validated = $request->validated();
 
@@ -105,12 +106,6 @@ class OrderController extends Controller
         if ($oldStatus !== $newStatus) {
             $order->status = $newStatus;
             $order->save();
-
-            $order->activityLogs()->create([
-                'user_id' => auth()->id(),
-                'old_status' => $oldStatus,
-                'new_status' => $newStatus,
-            ]);
 
             // Envoyer un e-mail de confirmation si le statut est 'confirmed'
             if ($newStatus === 'confirmed') {

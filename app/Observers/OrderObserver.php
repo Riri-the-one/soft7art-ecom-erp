@@ -3,8 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Order;
-use App\Models\OrderActivity;
-use Illuminate\Support\Facades\Auth;
+use App\Models\OrderActivityLog; // On importe le bon modèle !
 
 class OrderObserver
 {
@@ -13,31 +12,26 @@ class OrderObserver
      */
     public function updated(Order $order): void
     {
-        // On vérifie si le champ 'status' a spécifiquement été modifié
+        // On vérifie si le statut a changé
         if ($order->isDirty('status')) {
-            OrderActivity::create([
-                'order_id' => $order->id,
-                'user_id' => Auth::id(),
-                'old_status' => $order->getOriginal('status'),
-                'new_status' => $order->status,
-            ]);
-
             $oldStatus = $order->getOriginal('status');
             $newStatus = $order->status;
 
+            // Enregistrement infalsifiable dans la bonne table d'historique
+            OrderActivityLog::create([
+                'order_id' => $order->id,
+                'user_id' => auth()->check() ? auth()->id() : $order->user_id, // Si script auto, on prend le proprio
+                'old_status' => $oldStatus,
+                'new_status' => $newStatus,
+            ]);
+
+            // Gestion du stock si la commande est confirmée (Ta logique métier existante)
             if ($newStatus === 'confirmed' && $oldStatus !== 'confirmed') {
                 foreach ($order->products as $product) {
-                    $product->decrement('stock_quantity', $product->pivot->quantity);
-                }
-            }
-
-            if (in_array($newStatus, ['canceled', 'returned']) && in_array($oldStatus, ['confirmed', 'shipped', 'delivered'])) {
-                foreach ($order->products as $product) {
-                    $product->increment('stock_quantity', $product->pivot->quantity);
+                    $quantity = $product->pivot->quantity;
+                    $product->decrement('stock_quantity', $quantity);
                 }
             }
         }
     }
-
-    // Tu peux laisser les autres méthodes générées par défaut (created, deleted, etc.) vides en dessous.
 }

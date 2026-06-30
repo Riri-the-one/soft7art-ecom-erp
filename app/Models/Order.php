@@ -31,13 +31,7 @@ class Order extends Model
         return $this->belongsToMany(Product::class)->withPivot('quantity', 'unit_price');
     }
 
-    // Possède un historique de modifications
-    public function activities()
-    {
-        // On cible bien OrderActivity et on ajoute latest() pour avoir les plus récents en premier
-        return $this->hasMany(OrderActivity::class)->latest();
-    }
-
+    
     // Possède un historique des logs d'activité
     public function activityLogs()
     {

@@ -29,6 +29,7 @@ Route::middleware('auth')->group(function () {
     });
 
     // --- 2. ROUTES DES COMMANDES ---
+    // L'autorisation fine (qui peut voir quoi) est gérée par OrderPolicy dans le contrôleur.
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     
     // Routes de création de commande (Agent et Admin) - DOIT être AVANT les routes dynamiques
@@ -45,9 +46,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/orders/export/csv', [OrderController::class, 'exportCsv'])->name('orders.export');
     });
     
-    Route::middleware('role:agent')->group(function () {
-        Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
-    });
+    // Le contrôle de rôle pour updateStatus est désormais géré par OrderPolicy::updateStatus()
+    Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
 
     // --- 3. ROUTES DES CLIENTS CRM ---
     Route::middleware('role:super_admin,agent')->group(function () {

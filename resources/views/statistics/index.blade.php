@@ -66,6 +66,11 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         const ctx = document.getElementById('ordersChart').getContext('2d');
+        
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(52, 211, 153, 0.3)');
+        gradient.addColorStop(1, 'rgba(52, 211, 153, 0.0)');
+        
         new Chart(ctx, {
             type: 'line',
             data: {
@@ -73,10 +78,16 @@
                 datasets: [{
                     label: 'Commandes',
                     data: @json($chartData),
-                    borderColor: '#3b82f6',
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderColor: '#34D399',
+                    backgroundColor: gradient,
                     fill: true,
-                    tension: 0.3,
+                    tension: 0.4,
+                    borderWidth: 3,
+                    pointBackgroundColor: '#34D399',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
                 }],
             },
             options: {
@@ -91,6 +102,14 @@
                         beginAtZero: true,
                         ticks: {
                             stepSize: 1,
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.03)',
+                        },
+                    },
+                    x: {
+                        grid: {
+                            display: false,
                         },
                     },
                 },

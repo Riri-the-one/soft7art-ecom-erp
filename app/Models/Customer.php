@@ -10,7 +10,7 @@ class Customer extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'phone', 'city', 'address', 'is_blacklisted'
+        'name', 'email', 'phone', 'city', 'address', 'is_blacklisted'
     ];
 
     // Un client peut passer plusieurs commandes

@@ -1,16 +1,25 @@
-        <nav class="w-64 bg-white border-r border-gray-200 h-full flex flex-col">
+        <nav class="w-64 bg-white border-r border-gray-100 shadow-sm h-full flex flex-col">
             <!-- Haut : Logo et Liens -->
             <div class="flex-1 flex flex-col overflow-y-auto">
                 <!-- Logo Section -->
-                <div class="px-6 py-5 border-b border-gray-200">
+                <div class="px-6 py-5 border-b border-gray-100">
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
                         <span class="text-lg font-semibold text-gray-900">{{ config('app.name', 'Laravel') }}</span>
                     </a>
                 </div>
 
+                <!-- Action Button -->
+                @if(Auth::user()->hasRole('agent') || Auth::user()->hasRole('super_admin'))
+                    <div class="px-4 py-4">
+                        <a href="{{ route('orders.create') }}" class="block w-full text-center bg-gradient-to-r from-purple-500 to-teal-400 text-white rounded-md py-2 px-4 shadow-md font-bold text-sm">
+                            Nouvelle Commande
+                        </a>
+                    </div>
+                @endif
+
                 <!-- Navigation Links -->
-                <div class="flex flex-col space-y-2 mt-4 px-4">
+                <div class="flex flex-col space-y-1 mt-2 px-4">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="w-full block">
                         {{ __('Dashboard') }}
                     </x-nav-link>
@@ -38,8 +47,8 @@
             </div>
 
             <!-- Bas : Profile Section -->
-            <div class="p-4 border-t border-gray-200 bg-gray-50 mt-auto">
-                <div class="text-sm text-gray-600">{{ Auth::user()->name }}</div>
+            <div class="p-4 border-t border-gray-100 mt-auto">
+                <div class="text-sm text-gray-700">{{ Auth::user()->name }}</div>
                 <div class="text-xs text-gray-400 mb-4">{{ Auth::user()->email }}</div>
 
                 <x-responsive-nav-link :href="route('profile.edit')" class="block mb-3">

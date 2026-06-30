@@ -83,12 +83,14 @@
                                 >
                                     Réinitialiser
                                 </a>
-                                <a 
-                                    href="{{ route('orders.export') }}" 
-                                    class="px-6 py-2 bg-gray-900 text-white font-medium rounded-md text-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-700"
-                                >
-                                    Exporter en CSV
-                                </a>
+                                @if(in_array(auth()->user()->role, ['super_admin', 'agent']))
+                                    <a 
+                                        href="{{ route('orders.export') }}" 
+                                        class="px-6 py-2 bg-gray-900 text-white font-medium rounded-md text-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-700"
+                                    >
+                                        Exporter en CSV
+                                    </a>
+                                @endif
                             </div>
                         </div>
                     </form>

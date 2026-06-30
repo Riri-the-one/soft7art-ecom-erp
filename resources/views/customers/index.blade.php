@@ -17,52 +17,52 @@
                     </div>
 
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
+                        <table class="w-full text-left">
                             <thead>
-                                <tr class="bg-gray-100 border-b-2 border-gray-200">
-                                    <th class="p-3 font-bold text-gray-600">Nom du Client</th>
-                                    <th class="p-3 font-bold text-gray-600">Email</th>
-                                    <th class="p-3 font-bold text-gray-600">Telephone</th>
-                                    <th class="p-3 font-bold text-gray-600 text-center">Commandes</th>
-                                    <th class="p-3 font-bold text-gray-600 text-center">Taux de Livraison</th>
-                                    <th class="p-3 font-bold text-gray-600 text-right">Total Depense</th>
-                                    <th class="p-3 font-bold text-gray-600 text-center">Actions</th>
+                                <tr class="border-b border-gray-100">
+                                    <th class="p-3 font-semibold text-gray-400 text-xs uppercase tracking-wider">Nom du Client</th>
+                                    <th class="p-3 font-semibold text-gray-400 text-xs uppercase tracking-wider">Email</th>
+                                    <th class="p-3 font-semibold text-gray-400 text-xs uppercase tracking-wider">Telephone</th>
+                                    <th class="p-3 font-semibold text-gray-400 text-xs uppercase tracking-wider text-center">Commandes</th>
+                                    <th class="p-3 font-semibold text-gray-400 text-xs uppercase tracking-wider text-center">Taux de Livraison</th>
+                                    <th class="p-3 font-semibold text-gray-400 text-xs uppercase tracking-wider text-right">Total Depense</th>
+                                    <th class="p-3 font-semibold text-gray-400 text-xs uppercase tracking-wider text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($customers as $customer)
-                                    <tr class="border-b hover:bg-gray-50 transition">
-                                        <td class="p-3 font-semibold text-gray-900">{{ $customer->name }}</td>
-                                        <td class="p-3 text-sm text-gray-600">{{ $customer->email }}</td>
-                                        <td class="p-3 text-sm text-gray-600">{{ $customer->phone ?? 'N/A' }}</td>
+                                    <tr class="border-b border-gray-50 hover:bg-gray-50 transition">
+                                        <td class="p-3 font-semibold text-gray-800">{{ $customer->name }}</td>
+                                        <td class="p-3 text-sm text-gray-700">{{ $customer->email }}</td>
+                                        <td class="p-3 text-sm text-gray-400">{{ $customer->phone ?? 'N/A' }}</td>
                                         <td class="p-3 text-center">
-                                            <span class="inline-flex items-center justify-center px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-bold">
+                                            <span class="inline-flex items-center justify-center px-3 py-1 bg-purple-50 text-purple-600 rounded-full text-sm font-medium">
                                                 {{ $customer->orders_count }}
                                             </span>
                                         </td>
                                         <td class="p-3 text-center">
                                             @if ($customer->delivery_rate < 50)
-                                                <span class="text-red-600 font-bold">{{ $customer->delivery_rate }}%</span>
-                                                <span class="ml-2 inline-flex items-center px-2 py-0.5 bg-red-100 text-red-700 rounded-full text-xs font-semibold">Risque élevé</span>
+                                                <span class="text-red-600 font-medium">{{ $customer->delivery_rate }}%</span>
+                                                <span class="ml-2 inline-flex items-center px-2 py-0.5 bg-red-50 text-red-600 rounded-full text-xs font-medium">Risque élevé</span>
                                             @elseif ($customer->delivery_rate < 80)
-                                                <span class="text-orange-500">{{ $customer->delivery_rate }}%</span>
+                                                <span class="text-orange-500 font-medium">{{ $customer->delivery_rate }}%</span>
                                             @else
-                                                <span class="text-green-600 font-bold">{{ $customer->delivery_rate }}%</span>
-                                                <span class="ml-2 inline-flex items-center px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-xs font-semibold">Client sérieux</span>
+                                                <span class="text-teal-600 font-medium">{{ $customer->delivery_rate }}%</span>
+                                                <span class="ml-2 inline-flex items-center px-2 py-0.5 bg-teal-50 text-teal-600 rounded-full text-xs font-medium">Client sérieux</span>
                                             @endif
                                         </td>
-                                        <td class="p-3 text-right font-bold text-indigo-600">
+                                        <td class="p-3 text-right font-bold text-gray-800">
                                             {{ number_format($customer->orders->sum('total_amount'), 2, ',', ' ') }} DH
                                         </td>
                                         <td class="p-3 text-center">
-                                            <a href="{{ route('customers.show', $customer) }}" class="inline-flex items-center text-xs bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition">
+                                            <a href="{{ route('customers.show', $customer) }}" class="inline-flex items-center text-xs text-purple-600 hover:text-purple-700 font-medium">
                                                 Détails
                                             </a>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="p-6 text-center text-gray-500 font-medium">
+                                        <td colspan="7" class="p-6 text-center text-gray-400 font-medium">
                                             Aucun client trouvé dans la base de donnees.
                                         </td>
                                     </tr>

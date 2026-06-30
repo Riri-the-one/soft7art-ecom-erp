@@ -11,9 +11,11 @@
                 <a href="{{ route('orders.index') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
                     ← Retour à la liste
                 </a>
-                <a href="{{ route('orders.invoice', $order) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 border border-blue-600 rounded-md text-sm font-medium text-white hover:bg-blue-700">
-                    Télécharger la Facture
-                </a>
+                @if(in_array(auth()->user()->role, ['super_admin', 'agent']))
+                    <a href="{{ route('orders.invoice', $order) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 border border-blue-600 rounded-md text-sm font-medium text-white hover:bg-blue-700">
+                        Télécharger la Facture
+                    </a>
+                @endif
             </div>
 
             <div class="grid gap-6 lg:grid-cols-[1.5fr_1fr]">

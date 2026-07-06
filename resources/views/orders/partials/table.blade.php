@@ -1,4 +1,4 @@
-<!-- resources/views/orders/partials/table.blade.php -->
+﻿<!-- resources/views/orders/partials/table.blade.php -->
 <div class="overflow-x-auto rounded-[1.5rem] bg-white/90 dark:bg-gray-900 border border-slate-200 dark:border-gray-700 shadow-sm">
     <table class="w-full text-left">
         <thead>
@@ -13,7 +13,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($orders as $order)
+            @forelse($orders as $order)
                 <tr class="border-b border-slate-200 hover:bg-slate-50 dark:border-gray-700 dark:hover:bg-slate-800 transition-colors">
                     <td class="p-3 font-semibold text-slate-900 dark:text-gray-200">
                         <a href="{{ route('orders.show', $order) }}" class="text-purple-600 hover:underline transition-colors dark:text-purple-300">#{{ $order->id }}</a>
@@ -49,7 +49,23 @@
                         </a>
                     </td>
                 </tr>
-            @endforeach
+            @empty
+                <tr>
+                    <td colspan="7" class="p-10">
+                        <div class="rounded-[1.5rem] border border-dashed border-slate-300 bg-slate-50 p-10 text-center dark:border-slate-700 dark:bg-slate-900">
+                            <svg class="mx-auto h-14 w-14 text-slate-400 dark:text-slate-500" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M16 20H48V44H16V20Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M20 16H44V20" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M24 28H40" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                                <path d="M24 36H40" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                                <path d="M24 44H33" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                            </svg>
+                            <p class="mt-5 text-lg font-semibold text-slate-900 dark:text-gray-100">Aucune commande trouvée</p>
+                            <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">Ajustez vos filtres ou créez une nouvelle commande pour commencer.</p>
+                        </div>
+                    </td>
+                </tr>
+            @endforelse
         </tbody>
     </table>
 </div>

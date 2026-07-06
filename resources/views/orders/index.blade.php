@@ -5,14 +5,14 @@
         </h2>
     </x-slot>
 
-    <div class="py-12 bg-slate-50">
+    <div class="py-12 bg-slate-50 dark:bg-slate-950">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="mb-8 rounded-[2rem] bg-gradient-to-r from-purple-600 via-rose-500 to-teal-400 p-8 text-white shadow-[0_30px_60px_-30px_rgba(124,58,237,0.8)]">
                 <h1 class="text-3xl font-bold">Suivi des Commandes</h1>
                 <p class="mt-2 max-w-2xl text-slate-100">Filtrez, recherchez et passez en Kanban pour une visibilité instantanée sur le flux des commandes.</p>
             </div>
 
-            <div class="bg-white/95 overflow-hidden shadow-[0_25px_50px_-25px_rgba(15,23,42,0.25)] sm:rounded-[2rem] border border-slate-200">
+            <div class="bg-white/95 overflow-hidden shadow-[0_25px_50px_-25px_rgba(15,23,42,0.25)] sm:rounded-[2rem] border border-slate-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100">
                 <div class="p-6">
 
                     <!-- Formulaire de recherche et filtrage -->
@@ -26,7 +26,7 @@
                                     id="search"
                                     placeholder="N° commande ou client..."
                                     value="{{ request('search') }}"
-                                    class="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-700 shadow-sm focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-200"
+                                    class="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-700 shadow-sm focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-200 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-100 dark:focus:border-purple-400 dark:focus:ring-purple-900/40"
                                 >
                             </div>
 
@@ -35,7 +35,7 @@
                                 <select 
                                     name="status" 
                                     id="status"
-                                    class="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-700 shadow-sm focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-200"
+                                    class="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-700 shadow-sm focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-200 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-100 dark:focus:border-purple-400 dark:focus:ring-purple-900/40"
                                 >
                                     <option value="">Tous les statuts</option>
                                     <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>En attente</option>
@@ -53,7 +53,7 @@
                                     name="date_from"
                                     id="date_from"
                                     value="{{ request('date_from') }}"
-                                    class="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-700 shadow-sm focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-200"
+                                    class="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-700 shadow-sm focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-200 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-100 dark:focus:border-purple-400 dark:focus:ring-purple-900/40"
                                 >
                             </div>
 
@@ -65,7 +65,7 @@
                                     name="date_to"
                                     id="date_to"
                                     value="{{ request('date_to') }}"
-                                    class="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-700 shadow-sm focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-200"
+                                    class="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-700 shadow-sm focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-200 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-100 dark:focus:border-purple-400 dark:focus:ring-purple-900/40"
                                 >
                             </div>
 
@@ -90,7 +90,7 @@
                                 <div class="flex flex-wrap gap-3">
                                     <a 
                                         href="{{ route('orders.index') }}" 
-                                        class="inline-flex items-center rounded-3xl border border-slate-200 bg-slate-100 text-slate-700 px-5 py-3 text-sm font-medium hover:bg-slate-200"
+                                        class="inline-flex items-center rounded-3xl border border-slate-200 bg-slate-100 text-slate-700 px-5 py-3 text-sm font-medium hover:bg-slate-200 dark:bg-slate-900 dark:border-gray-700 dark:text-slate-100 dark:hover:bg-slate-800"
                                     >
                                         Réinitialiser
                                     </a>
@@ -107,7 +107,7 @@
                         </div>
                     </form>
 
-                    <div id="table-container" class="rounded-[2rem] border border-slate-200 bg-slate-50 shadow-sm overflow-hidden">
+                    <div id="table-container" class="rounded-[2rem] border border-slate-200 bg-slate-50 shadow-sm overflow-hidden dark:bg-gray-900 dark:border-gray-700">
                         @include('orders.partials.table')
                     </div>
 

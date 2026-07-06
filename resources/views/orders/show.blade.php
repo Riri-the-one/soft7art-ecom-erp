@@ -5,10 +5,10 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-12 bg-slate-50 dark:bg-slate-950">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="flex items-center justify-between mb-6">
-                <a href="{{ route('orders.index') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+                <a href="{{ route('orders.index') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-slate-800">
                     ← Retour à la liste
                 </a>
                 @if(in_array(auth()->user()->role, ['super_admin', 'agent']))
@@ -19,34 +19,34 @@
             </div>
 
             <div class="grid gap-6 lg:grid-cols-[1.5fr_1fr]">
-                <div class="bg-white shadow-sm rounded-lg overflow-hidden">
-                    <div class="p-6 border-b border-gray-100">
-                        <h3 class="text-lg font-semibold text-gray-800">Informations de la commande</h3>
-                        <p class="mt-3 text-sm text-gray-600">N° commande : <span class="font-medium">#{{ $order->id }}</span></p>
-                        <p class="mt-1 text-sm text-gray-600">Date : <span class="font-medium">{{ $order->created_at->format('d/m/Y H:i') }}</span></p>
-                        <p class="mt-1 text-sm text-gray-600">Client : <span class="font-medium">{{ $order->customer->name }}</span></p>
-                        <p class="mt-1 text-sm text-gray-600">Agent responsable : <span class="font-medium">{{ $order->user->name }}</span></p>
+                <div class="bg-white shadow-sm rounded-lg overflow-hidden dark:bg-slate-900 dark:border dark:border-gray-700">
+                    <div class="p-6 border-b border-gray-100 dark:border-gray-700">
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Informations de la commande</h3>
+                        <p class="mt-3 text-sm text-gray-600 dark:text-slate-400">N° commande : <span class="font-medium text-gray-900 dark:text-gray-100">#{{ $order->id }}</span></p>
+                        <p class="mt-1 text-sm text-gray-600 dark:text-slate-400">Date : <span class="font-medium text-gray-900 dark:text-gray-100">{{ $order->created_at->format('d/m/Y H:i') }}</span></p>
+                        <p class="mt-1 text-sm text-gray-600 dark:text-slate-400">Client : <span class="font-medium text-gray-900 dark:text-gray-100">{{ $order->customer->name }}</span></p>
+                        <p class="mt-1 text-sm text-gray-600 dark:text-slate-400">Agent responsable : <span class="font-medium text-gray-900 dark:text-gray-100">{{ $order->user->name }}</span></p>
                     </div>
 
                     <div class="p-6">
-                        <h4 class="text-base font-semibold text-gray-800 mb-4">Produits de la commande</h4>
+                        <h4 class="text-base font-semibold text-gray-800 mb-4 dark:text-gray-100">Produits de la commande</h4>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse">
                                 <thead>
-                                    <tr class="bg-gray-50 text-sm text-gray-600 uppercase tracking-wide">
-                                        <th class="p-3 border-b border-gray-200">Produit</th>
-                                        <th class="p-3 border-b border-gray-200">Quantité</th>
+                                    <tr class="bg-gray-50 text-sm text-gray-600 uppercase tracking-wide dark:bg-slate-800 dark:text-slate-300">
+                                        <th class="p-3 border-b border-gray-200 dark:border-gray-700">Produit</th>
+                                        <th class="p-3 border-b border-gray-200 dark:border-gray-700">Quantité</th>
                                         <th class="p-3 border-b border-gray-200">Prix unitaire</th>
                                         <th class="p-3 border-b border-gray-200">Sous-total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($order->products as $product)
-                                        <tr class="border-b hover:bg-gray-50">
-                                            <td class="p-3 text-sm text-gray-800">{{ $product->name }}</td>
-                                            <td class="p-3 text-sm text-gray-700">{{ $product->pivot->quantity }}</td>
-                                            <td class="p-3 text-sm text-gray-700">{{ number_format($product->pivot->unit_price, 2) }} DH</td>
-                                            <td class="p-3 text-sm font-semibold text-gray-900">{{ number_format($product->pivot->quantity * $product->pivot->unit_price, 2) }} DH</td>
+                                        <tr class="border-b hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-slate-800">
+                                            <td class="p-3 text-sm text-gray-800 dark:text-gray-100">{{ $product->name }}</td>
+                                            <td class="p-3 text-sm text-gray-700 dark:text-slate-300">{{ $product->pivot->quantity }}</td>
+                                            <td class="p-3 text-sm text-gray-700 dark:text-slate-300">{{ number_format($product->pivot->unit_price, 2) }} DH</td>
+                                            <td class="p-3 text-sm font-semibold text-gray-900 dark:text-gray-100">{{ number_format($product->pivot->quantity * $product->pivot->unit_price, 2) }} DH</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -56,17 +56,17 @@
                 </div>
 
                 <div class="space-y-6">
-                    <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+                    <div class="bg-white shadow-sm rounded-lg overflow-hidden dark:bg-slate-900 dark:border dark:border-gray-700">
                         <div class="p-6">
-                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Gérer le statut</h3>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 dark:text-gray-100">Gérer le statut</h3>
 
                             @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('agent'))
                                 <form action="{{ route('orders.updateStatus', $order) }}" method="POST">
                                     @csrf
                                     @method('PATCH')
 
-                                    <label for="status" class="block text-sm font-medium text-gray-700">Statut actuel :</label>
-                                    <select id="status" name="status" class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                    <label for="status" class="block text-sm font-medium text-gray-700 dark:text-slate-300">Statut actuel :</label>
+                                    <select id="status" name="status" class="mt-2 block w-full rounded-md border-gray-300 bg-white text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-slate-900 dark:border-gray-700 dark:text-gray-100">
                                         @foreach(['pending' => 'En attente', 'confirmed' => 'Confirmée', 'shipped' => 'Expédiée', 'delivered' => 'Livrée', 'canceled' => 'Annulée'] as $value => $label)
                                             <option value="{{ $value }}" {{ $order->status === $value ? 'selected' : '' }}>{{ $label }}</option>
                                         @endforeach
@@ -77,8 +77,8 @@
                                     </button>
                                 </form>
                             @else
-                                <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
-                                    <p class="text-sm text-gray-700">Statut actuel de la commande : <span class="font-semibold">{{ $order->status }}</span></p>
+                                <div class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-slate-900">
+                                    <p class="text-sm text-gray-700 dark:text-slate-300">Statut actuel de la commande : <span class="font-semibold text-gray-900 dark:text-gray-100">{{ $order->status }}</span></p>
                                 </div>
                             @endif
 
@@ -90,40 +90,40 @@
                         </div>
                     </div>
 
-                    <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+                    <div class="bg-white shadow-sm rounded-lg overflow-hidden dark:bg-slate-900 dark:border dark:border-gray-700">
                         <div class="p-6">
-                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Récapitulatif</h3>
-                            <div class="space-y-2 text-sm text-gray-700">
-                                <p>Frais de livraison : <span class="font-medium">{{ number_format($order->delivery_fee, 2) }} DH</span></p>
-                                <p>Montant total : <span class="font-semibold">{{ number_format($order->total_amount, 2) }} DH</span></p>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 dark:text-gray-100">Récapitulatif</h3>
+                            <div class="space-y-2 text-sm text-gray-700 dark:text-slate-300">
+                                <p>Frais de livraison : <span class="font-medium text-gray-900 dark:text-gray-100">{{ number_format($order->delivery_fee, 2) }} DH</span></p>
+                                <p>Montant total : <span class="font-semibold text-gray-900 dark:text-gray-100">{{ number_format($order->total_amount, 2) }} DH</span></p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+                    <div class="bg-white shadow-sm rounded-lg overflow-hidden dark:bg-slate-900 dark:border dark:border-gray-700">
                         <div class="p-6">
-                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Historique de la commande</h3>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 dark:text-gray-100">Historique de la commande</h3>
 
                             @if($order->activityLogs->isEmpty())
-                                <p class="text-sm text-gray-600">Aucun changement de statut pour le moment.</p>
+                                <p class="text-sm text-gray-600 dark:text-slate-400">Aucun changement de statut pour le moment.</p>
                             @else
                                 <div class="relative">
-                                    <div class="absolute inset-y-0 left-5 w-px bg-gray-200"></div>
+                                    <div class="absolute inset-y-0 left-5 w-px bg-gray-200 dark:bg-gray-700"></div>
                                     <div class="space-y-6 pl-12">
                                         @foreach($order->activityLogs as $log)
                                             <div class="relative">
                                                 <span class="absolute left-0 top-1.5 flex h-3.5 w-3.5">
                                                     <span class="absolute inline-flex h-full w-full rounded-full bg-indigo-600 opacity-75"></span>
-                                                    <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-white border border-indigo-600"></span>
+                                                    <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-white border border-indigo-600 dark:bg-slate-800"></span>
                                                 </span>
-                                                <div class="rounded-xl border border-gray-200 bg-gray-50 p-4 shadow-sm">
-                                                    <div class="flex items-center justify-between gap-4 text-sm text-gray-500">
+                                                <div class="rounded-xl border border-gray-200 bg-gray-50 p-4 shadow-sm dark:border-gray-700 dark:bg-slate-900">
+                                                    <div class="flex items-center justify-between gap-4 text-sm text-gray-500 dark:text-slate-400">
                                                         <span>{{ $log->created_at->format('d/m/Y H:i') }}</span>
-                                                        <span class="rounded-full bg-indigo-100 text-indigo-700 px-2 py-1 text-xs font-semibold uppercase tracking-wide">{{ $log->user?->name ?? 'Utilisateur' }}</span>
+                                                        <span class="rounded-full bg-indigo-100 text-indigo-700 px-2 py-1 text-xs font-semibold uppercase tracking-wide dark:bg-indigo-900 dark:text-indigo-200">{{ $log->user?->name ?? 'Utilisateur' }}</span>
                                                     </div>
-                                                    <div class="mt-3 text-sm text-gray-700">
-                                                        <p class="font-medium text-gray-900">{{ ucfirst($log->old_status) }} → {{ ucfirst($log->new_status) }}</p>
-                                                        <p class="mt-2 text-sm text-gray-600">Statut modifié par {{ $log->user?->name ?? 'Utilisateur inconnu' }}.</p>
+                                                    <div class="mt-3 text-sm text-gray-700 dark:text-slate-300">
+                                                        <p class="font-medium text-gray-900 dark:text-gray-100">{{ ucfirst($log->old_status) }} → {{ ucfirst($log->new_status) }}</p>
+                                                        <p class="mt-2 text-sm text-gray-600 dark:text-slate-400">Statut modifié par {{ $log->user?->name ?? 'Utilisateur inconnu' }}.</p>
                                                     </div>
                                                 </div>
                                             </div>

@@ -21,9 +21,9 @@
             @include('layouts.navigation')
 
             <div class="flex-1 flex flex-col overflow-hidden">
-                <div class="md:hidden bg-white/95 border-b border-slate-200 backdrop-blur">
+                <div class="md:hidden bg-white/95 border-b border-slate-200 backdrop-blur dark:bg-slate-900 dark:border-gray-700">
                     <div class="flex items-center justify-between px-4 py-3">
-                        <button @click="sidebarOpen = true" class="inline-flex items-center justify-center rounded-md border border-slate-300 bg-white/90 px-3 py-2 text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-purple-500/50">
+                        <button @click="sidebarOpen = true" class="inline-flex items-center justify-center rounded-md border border-slate-300 bg-white/90 px-3 py-2 text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-purple-500/50 dark:border-gray-600 dark:bg-slate-800 dark:text-gray-200 dark:hover:bg-slate-700">
                             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                             </svg>
@@ -45,5 +45,42 @@
                 </main>
             </div>
         </div>
+
+        <script>
+            var themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+            var themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+            var themeToggleText = document.getElementById('theme-toggle-text');
+            var themeToggleThumb = document.getElementById('theme-toggle-thumb');
+
+            function setTheme(isDark) {
+                if (isDark) {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('color-theme', 'dark');
+                    if (themeToggleLightIcon) themeToggleLightIcon.classList.remove('hidden');
+                    if (themeToggleDarkIcon) themeToggleDarkIcon.classList.add('hidden');
+                    if (themeToggleText) themeToggleText.textContent = 'Mode Clair';
+                    if (themeToggleThumb) themeToggleThumb.classList.add('translate-x-5');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('color-theme', 'light');
+                    if (themeToggleDarkIcon) themeToggleDarkIcon.classList.remove('hidden');
+                    if (themeToggleLightIcon) themeToggleLightIcon.classList.add('hidden');
+                    if (themeToggleText) themeToggleText.textContent = 'Mode Sombre';
+                    if (themeToggleThumb) themeToggleThumb.classList.remove('translate-x-5');
+                }
+            }
+
+            var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            var storedTheme = localStorage.getItem('color-theme');
+            var darkMode = storedTheme === 'dark' || (!storedTheme && prefersDark);
+            setTheme(darkMode);
+
+            var themeToggleBtn = document.getElementById('theme-toggle');
+            if (themeToggleBtn) {
+                themeToggleBtn.addEventListener('click', function() {
+                    setTheme(!document.documentElement.classList.contains('dark'));
+                });
+            }
+        </script>
     </body>
 </html>

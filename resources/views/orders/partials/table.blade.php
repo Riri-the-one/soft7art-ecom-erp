@@ -1,7 +1,7 @@
-<div class="overflow-x-auto rounded-[1.5rem] bg-white/90 border border-slate-200 shadow-sm">
+<div class="overflow-x-auto rounded-[1.5rem] bg-white/90 border border-slate-200 shadow-sm dark:bg-gray-900 dark:border-gray-700">
     <table class="w-full text-left">
         <thead>
-            <tr class="border-b border-slate-200 bg-slate-50">
+            <tr class="border-b border-slate-200 bg-slate-50 dark:border-gray-700 dark:bg-slate-900">
                 <th class="p-3 font-semibold text-slate-500 text-xs uppercase tracking-wider">N° Commande</th>
                 <th class="p-3 font-semibold text-slate-500 text-xs uppercase tracking-wider">Client</th>
                 <th class="p-3 font-semibold text-slate-500 text-xs uppercase tracking-wider">Saisie par</th>

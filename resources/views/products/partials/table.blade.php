@@ -1,16 +1,16 @@
 <tbody>
     @foreach($products as $product)
-        <tr class="border-b border-slate-200 hover:bg-slate-50 transition-colors">
-            <td class="p-3 text-slate-900">{{ $product->name }}</td>
+        <tr class="border-b border-slate-200 hover:bg-slate-50 transition-colors dark:border-gray-700 dark:hover:bg-slate-800">
+            <td class="p-3 text-slate-900 dark:text-gray-100">{{ $product->name }}</td>
             @can('viewPurchasePrice', $product)
-                <td class="p-3 text-slate-700">{{ number_format($product->purchase_price, 2) }} DH</td>
+                <td class="p-3 text-slate-700 dark:text-slate-200">{{ number_format($product->purchase_price, 2) }} DH</td>
             @endcan
-            <td class="p-3 text-slate-700">{{ number_format($product->selling_price, 2) }} DH</td>
+            <td class="p-3 text-slate-700 dark:text-slate-200">{{ number_format($product->selling_price, 2) }} DH</td>
             <td class="p-3">
                 @if($product->isStockCritical())
-                    <span class="text-red-600 font-medium bg-red-50 px-2 py-1 rounded-full text-xs">{{ $product->stock_quantity }} (Critique)</span>
+                    <span class="text-red-600 font-medium bg-red-50 px-2 py-1 rounded-full text-xs dark:bg-red-900/20 dark:text-red-200">{{ $product->stock_quantity }} (Critique)</span>
                 @else
-                    <span class="text-slate-700 font-medium">{{ $product->stock_quantity }}</span>
+                    <span class="text-slate-700 dark:text-slate-200 font-medium">{{ $product->stock_quantity }}</span>
                 @endif
             </td>
             @if(Auth::user()->hasRole('stock_manager') || Auth::user()->hasRole('super_admin'))

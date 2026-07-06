@@ -48,6 +48,13 @@ class OrderController extends Controller
         return view('orders.index', compact('orders'));
     }
 
+    public function kanban()
+    {
+        $this->authorize('viewAny', \App\Models\Order::class);
+        $orders = \App\Models\Order::with('customer')->latest()->get();
+        return view('orders.kanban', compact('orders'));
+    }
+
     public function show(Order $order)
     {
         $this->authorize('view', $order);

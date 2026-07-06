@@ -32,6 +32,10 @@
                         {{ __('Commandes') }}
                     </x-nav-link>
 
+                    <x-nav-link :href="route('orders.kanban')" :active="request()->routeIs('orders.kanban')" class="w-full block">
+                        {{ __('Tableau Kanban') }}
+                    </x-nav-link>
+
                     @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('agent'))
                         <x-nav-link :href="route('customers.index')" :active="request()->routeIs('customers.*')" class="w-full block">
                             {{ __('Annuaire Clients') }}

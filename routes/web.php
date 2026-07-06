@@ -29,10 +29,9 @@ Route::middleware('auth')->group(function () {
     });
 
     // --- 2. ROUTES DES COMMANDES ---
-    // L'autorisation fine (qui peut voir quoi) est gérée par OrderPolicy dans le contrôleur.
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/kanban', [OrderController::class, 'kanban'])->name('orders.kanban');
     
-    // Routes de création de commande (Agent et Admin) - DOIT être AVANT les routes dynamiques
     Route::middleware('role:agent,super_admin')->group(function () {
         Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
         Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');

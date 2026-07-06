@@ -10,12 +10,17 @@ class CustomerController extends Controller
     /**
      * Display a listing of customers with their order count and total spent.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $customers = Customer::withCount('orders')
+        $query = Customer::withCount('orders')
             ->with('orders')
-            ->latest()
-            ->paginate(15);
+            ->latest();
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        $customers = $query->paginate(15);
 
         return view('customers.index', compact('customers'));
     }

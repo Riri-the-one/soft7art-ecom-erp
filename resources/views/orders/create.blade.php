@@ -97,7 +97,7 @@
                         <div class="flex justify-end">
                             <button 
                                 type="submit" 
-                                class="px-6 py-2 bg-blue-600 text-white font-medium rounded-md text-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                class="bg-gradient-to-r from-purple-500 to-teal-400 hover:from-purple-600 hover:to-teal-500 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all border-0"
                             >
                                 Enregistrer la commande
                             </button>

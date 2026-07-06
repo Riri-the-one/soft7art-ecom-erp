@@ -1,40 +1,52 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="text-3xl font-bold tracking-tight text-white">
             {{ __('Gestion des Clients CRM') }}
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-12 bg-slate-50">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-lg font-semibold text-gray-800">Liste des Clients</h3>
-                        <a href="{{ route('customers.create') }}" class="px-4 py-2 bg-blue-600 text-white font-medium rounded-md text-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            Nouveau Client
-                        </a>
+            <div class="mb-8 rounded-[2rem] bg-gradient-to-r from-violet-600 via-purple-600 to-teal-500 p-8 text-white shadow-[0_30px_60px_-30px_rgba(124,58,237,0.8)]">
+                <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold">Clients CRM</h1>
+                        <p class="mt-2 max-w-2xl text-slate-100">Maintenez un suivi client propre et trouvez rapidement le bon profil.</p>
                     </div>
+                    <a href="{{ route('customers.create') }}" class="inline-flex items-center justify-center rounded-3xl bg-white/95 px-6 py-3 text-sm font-semibold text-slate-900 shadow-lg transition hover:bg-white">
+                        Nouveau Client
+                    </a>
+                </div>
+            </div>
 
-                    <div class="overflow-x-auto">
+            <div class="bg-white/95 overflow-hidden shadow-[0_25px_50px_-25px_rgba(15,23,42,0.25)] sm:rounded-[2rem] border border-slate-200">
+                <div class="p-6">
+                    <form method="GET" action="{{ route('customers.index') }}" class="mb-6 flex flex-col gap-4 md:flex-row md:items-center">
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Rechercher un client..." class="flex-1 rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-700 shadow-sm focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-200">
+                        <button type="submit" class="inline-flex items-center justify-center rounded-3xl bg-gradient-to-r from-purple-600 to-teal-400 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:shadow-xl">Rechercher</button>
+                    </form>
+
+                    <div class="overflow-x-auto rounded-[1.5rem] border border-slate-200 bg-white/90 shadow-sm">
                         <table class="w-full text-left">
                             <thead>
-                                <tr class="border-b border-gray-100">
-                                    <th class="p-3 font-semibold text-gray-400 text-xs uppercase tracking-wider">Nom du Client</th>
-                                    <th class="p-3 font-semibold text-gray-400 text-xs uppercase tracking-wider">Email</th>
-                                    <th class="p-3 font-semibold text-gray-400 text-xs uppercase tracking-wider">Telephone</th>
-                                    <th class="p-3 font-semibold text-gray-400 text-xs uppercase tracking-wider text-center">Commandes</th>
-                                    <th class="p-3 font-semibold text-gray-400 text-xs uppercase tracking-wider text-center">Taux de Livraison</th>
-                                    <th class="p-3 font-semibold text-gray-400 text-xs uppercase tracking-wider text-right">Total Depense</th>
-                                    <th class="p-3 font-semibold text-gray-400 text-xs uppercase tracking-wider text-center">Actions</th>
+                                <tr class="border-b border-slate-200 bg-slate-50">
+                                    <th class="p-3 font-semibold text-slate-500 text-xs uppercase tracking-wider">Nom du Client</th>
+                                    <th class="p-3 font-semibold text-slate-500 text-xs uppercase tracking-wider">Email</th>
+                                    <th class="p-3 font-semibold text-slate-500 text-xs uppercase tracking-wider">Telephone</th>
+                                    <th class="p-3 font-semibold text-slate-500 text-xs uppercase tracking-wider text-center">Commandes</th>
+                                    <th class="p-3 font-semibold text-slate-500 text-xs uppercase tracking-wider text-center">Taux de Livraison</th>
+                                    <th class="p-3 font-semibold text-slate-500 text-xs uppercase tracking-wider text-right">Total Depense</th>
+                                    <th class="p-3 font-semibold text-slate-500 text-xs uppercase tracking-wider text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($customers as $customer)
-                                    <tr class="border-b border-gray-50 hover:bg-gray-50 transition">
-                                        <td class="p-3 font-semibold text-gray-800">{{ $customer->name }}</td>
-                                        <td class="p-3 text-sm text-gray-700">{{ $customer->email }}</td>
-                                        <td class="p-3 text-sm text-gray-400">{{ $customer->phone ?? 'N/A' }}</td>
+                                    <tr class="border-b border-slate-200 hover:bg-slate-50 transition-colors">
+                                        <td class="p-3 font-semibold text-slate-900">
+                                            <a href="{{ route('customers.show', $customer) }}" class="text-purple-600 hover:underline transition-colors">{{ $customer->name }}</a>
+                                        </td>
+                                        <td class="p-3 text-sm text-slate-700">{{ $customer->email }}</td>
+                                        <td class="p-3 text-sm text-slate-500">{{ $customer->phone ?? 'N/A' }}</td>
                                         <td class="p-3 text-center">
                                             <span class="inline-flex items-center justify-center px-3 py-1 bg-purple-50 text-purple-600 rounded-full text-sm font-medium">
                                                 {{ $customer->orders_count }}
@@ -51,7 +63,7 @@
                                                 <span class="ml-2 inline-flex items-center px-2 py-0.5 bg-teal-50 text-teal-600 rounded-full text-xs font-medium">Client sérieux</span>
                                             @endif
                                         </td>
-                                        <td class="p-3 text-right font-bold text-gray-800">
+                                        <td class="p-3 text-right font-bold text-slate-900">
                                             {{ number_format($customer->orders->sum('total_amount'), 2, ',', ' ') }} DH
                                         </td>
                                         <td class="p-3 text-center">
@@ -62,7 +74,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="p-6 text-center text-gray-400 font-medium">
+                                        <td colspan="7" class="p-6 text-center text-slate-500 font-medium">
                                             Aucun client trouvé dans la base de donnees.
                                         </td>
                                     </tr>

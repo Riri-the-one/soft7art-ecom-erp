@@ -46,7 +46,7 @@
 
                     <div class="flex justify-end space-x-3 pt-4 border-t">
                         <a href="{{ route('products.index') }}" class="bg-gray-100 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-200 transition">Annuler</a>
-                        <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition">Enregistrer le produit</button>
+                        <button type="submit" class="bg-gradient-to-r from-purple-500 to-teal-400 hover:from-purple-600 hover:to-teal-500 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all border-0">Enregistrer le produit</button>
                     </div>
                 </form>
 

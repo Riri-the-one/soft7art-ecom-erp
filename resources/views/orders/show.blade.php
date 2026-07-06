@@ -72,7 +72,7 @@
                                         @endforeach
                                     </select>
 
-                                    <button type="submit" class="mt-4 w-full inline-flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <button type="submit" class="mt-4 w-full inline-flex justify-center bg-gradient-to-r from-purple-500 to-teal-400 hover:from-purple-600 hover:to-teal-500 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all border-0">
                                         Mettre à jour le statut
                                     </button>
                                 </form>

@@ -1,40 +1,44 @@
-<div class="overflow-x-auto">
+<div class="overflow-x-auto rounded-[1.5rem] bg-white/90 border border-slate-200 shadow-sm">
     <table class="w-full text-left">
         <thead>
-            <tr class="border-b border-gray-100">
-                <th class="p-3 font-semibold text-gray-400 text-xs uppercase tracking-wider">N° Commande</th>
-                <th class="p-3 font-semibold text-gray-400 text-xs uppercase tracking-wider">Client</th>
-                <th class="p-3 font-semibold text-gray-400 text-xs uppercase tracking-wider">Saisie par</th>
-                <th class="p-3 font-semibold text-gray-400 text-xs uppercase tracking-wider">Frais Liv.</th>
-                <th class="p-3 font-semibold text-gray-400 text-xs uppercase tracking-wider">Montant Total</th>
-                <th class="p-3 font-semibold text-gray-400 text-xs uppercase tracking-wider">Statut</th>
-                <th class="p-3 font-semibold text-gray-400 text-xs uppercase tracking-wider text-center">Actions</th>
+            <tr class="border-b border-slate-200 bg-slate-50">
+                <th class="p-3 font-semibold text-slate-500 text-xs uppercase tracking-wider">N° Commande</th>
+                <th class="p-3 font-semibold text-slate-500 text-xs uppercase tracking-wider">Client</th>
+                <th class="p-3 font-semibold text-slate-500 text-xs uppercase tracking-wider">Saisie par</th>
+                <th class="p-3 font-semibold text-slate-500 text-xs uppercase tracking-wider">Frais Liv.</th>
+                <th class="p-3 font-semibold text-slate-500 text-xs uppercase tracking-wider">Montant Total</th>
+                <th class="p-3 font-semibold text-slate-500 text-xs uppercase tracking-wider">Statut</th>
+                <th class="p-3 font-semibold text-slate-500 text-xs uppercase tracking-wider text-center">Actions</th>
             </tr>
         </thead>
         <tbody>
             @foreach($orders as $order)
-                <tr class="border-b border-gray-50 hover:bg-gray-50">
-                    <td class="p-3 font-semibold text-gray-800">#{{ $order->id }}</td>
-                    <td class="p-3 text-gray-700">{{ $order->customer->name }}</td>
-                    <td class="p-3 text-sm text-gray-400">{{ $order->user->name }}</td>
-                    <td class="p-3 text-gray-700">{{ number_format($order->delivery_fee, 2) }} DH</td>
-                    <td class="p-3 font-bold text-gray-800">{{ number_format($order->total_amount, 2) }} DH</td>
+                <tr class="border-b border-slate-200 hover:bg-slate-50 transition-colors">
+                    <td class="p-3 font-semibold text-slate-900">
+                        <a href="{{ route('orders.show', $order) }}" class="text-purple-600 hover:underline transition-colors">#{{ $order->id }}</a>
+                    </td>
+                    <td class="p-3 text-slate-700">
+                        <a href="{{ route('customers.show', $order->customer) }}" class="text-purple-600 hover:underline transition-colors">{{ $order->customer->name }}</a>
+                    </td>
+                    <td class="p-3 text-sm text-slate-500">{{ $order->user->name }}</td>
+                    <td class="p-3 text-slate-700">{{ number_format($order->delivery_fee, 2) }} DH</td>
+                    <td class="p-3 font-bold text-slate-900">{{ number_format($order->total_amount, 2) }} DH</td>
                     <td class="p-3">
                         @switch($order->status)
                             @case('pending')
-                                <span class="px-2 py-1 bg-yellow-50 text-yellow-600 rounded-full text-xs font-medium">En attente</span>
+                                <span class="px-2 py-1 bg-amber-50 text-amber-700 rounded-full text-xs font-medium">En attente</span>
                                 @break
                             @case('confirmed')
-                                <span class="px-2 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-medium">Confirmée</span>
+                                <span class="px-2 py-1 bg-violet-50 text-violet-700 rounded-full text-xs font-medium">Confirmée</span>
                                 @break
                             @case('shipped')
-                                <span class="px-2 py-1 bg-indigo-50 text-indigo-600 rounded-full text-xs font-medium">Expédiée</span>
+                                <span class="px-2 py-1 bg-cyan-50 text-cyan-700 rounded-full text-xs font-medium">Expédiée</span>
                                 @break
                             @case('delivered')
-                                <span class="px-2 py-1 bg-teal-50 text-teal-600 rounded-full text-xs font-medium">Livrée</span>
+                                <span class="px-2 py-1 bg-teal-50 text-teal-700 rounded-full text-xs font-medium">Livrée</span>
                                 @break
                             @case('canceled')
-                                <span class="px-2 py-1 bg-purple-50 text-purple-600 rounded-full text-xs font-medium">Annulée</span>
+                                <span class="px-2 py-1 bg-fuchsia-50 text-fuchsia-700 rounded-full text-xs font-medium">Annulée</span>
                                 @break
                         @endswitch
                     </td>

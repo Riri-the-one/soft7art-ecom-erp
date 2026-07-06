@@ -1,36 +1,50 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <h2 class="text-3xl font-bold tracking-tight text-white">
                 {{ __('Kanban des commandes') }}
             </h2>
-            <a href="{{ route('orders.index') }}" class="text-sm text-indigo-600 hover:text-indigo-900 font-medium">
+            <a href="{{ route('orders.index') }}" class="inline-flex items-center rounded-3xl bg-slate-950/95 px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-slate-900">
                 &larr; Retour à la vue liste
             </a>
         </div>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-12 bg-slate-100">
         <div class="max-w-full mx-auto sm:px-6 lg:px-8">
+            <div class="mb-8 rounded-[2rem] bg-gradient-to-r from-purple-600 via-fuchsia-600 to-teal-500 p-8 text-white shadow-[0_30px_60px_-30px_rgba(124,58,237,0.8)]">
+                <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold">Kanban des commandes</h1>
+                        <p class="mt-2 max-w-2xl text-slate-100">Déplacez les commandes pour mettre à jour les statuts en temps réel.</p>
+                    </div>
+                    <a href="{{ route('orders.index') }}" class="inline-flex items-center rounded-3xl bg-slate-950/95 px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-slate-900">
+                        &larr; Retour à la liste
+                    </a>
+                </div>
+            </div>
+
             <div class="grid gap-4 grid-cols-1 md:grid-cols-3 lg:grid-cols-5">
                 @foreach(['pending' => 'En attente', 'confirmed' => 'Confirmées', 'shipped' => 'Expédiées', 'delivered' => 'Livrées', 'canceled' => 'Annulées'] as $status => $label)
-                    <div class="bg-gray-100 rounded-lg shadow-sm border border-gray-200 p-4">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-sm font-bold text-gray-700 uppercase tracking-wide">{{ $label }}</h3>
-                            <span class="bg-gray-200 text-gray-600 py-1 px-2 rounded-full text-xs font-semibold">
+                    <div class="rounded-[1.75rem] border border-slate-200 bg-white/95 shadow-[0_20px_40px_-20px_rgba(15,23,42,0.15)] p-5">
+                        <div class="flex justify-between items-center mb-5">
+                            <h3 class="text-sm font-semibold uppercase tracking-[0.22em] text-slate-700">{{ $label }}</h3>
+                            <span class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
                                 {{ $orders->where('status', $status)->count() }}
                             </span>
                         </div>
                         
-                        <div class="space-y-3 kanban-column min-h-[500px]" data-status="{{ $status }}">
+                        <div class="space-y-3 kanban-column min-h-[520px] rounded-[1.5rem] border border-dashed border-slate-200 bg-slate-50/80 p-3 transition-colors" data-status="{{ $status }}">
                             @foreach($orders->where('status', $status) as $order)
-                                <div class="kanban-card bg-white border border-gray-200 rounded-md p-3 cursor-move shadow-sm hover:shadow transition-shadow" data-order-id="{{ $order->id }}">
-                                    <div class="flex justify-between items-start mb-2">
-                                        <div class="font-semibold text-indigo-600">#{{ $order->id }}</div>
-                                        <div class="text-xs text-gray-500">{{ $order->created_at->format('d/m/Y') }}</div>
+                                <div class="kanban-card rounded-[1.5rem] border border-slate-200 bg-white shadow-[0_15px_30px_-15px_rgba(15,23,42,0.12)] p-4 transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_25px_45px_-20px_rgba(15,23,42,0.15)] cursor-move" data-order-id="{{ $order->id }}">
+                                    <div class="flex justify-between items-start gap-3 mb-3">
+                                        <div>
+                                            <a href="{{ route('orders.show', $order) }}" class="font-semibold text-purple-600 hover:text-teal-500 hover:underline transition-colors">#{{ $order->id }}</a>
+                                        </div>
+                                        <div class="text-xs text-slate-500">{{ $order->created_at->format('d/m/Y') }}</div>
                                     </div>
-                                    <div class="text-sm font-medium text-gray-900 mb-1">{{ $order->customer->name }}</div>
-                                    <div class="text-sm text-gray-600 font-bold">{{ number_format($order->total_amount, 2, ',', ' ') }} DH</div>
+                                    <div class="text-sm font-semibold text-slate-900 mb-1">{{ $order->customer->name }}</div>
+                                    <div class="text-sm text-teal-600 font-bold">{{ number_format($order->total_amount, 2, ',', ' ') }} DH</div>
                                 </div>
                             @endforeach
                         </div>
@@ -40,7 +54,6 @@
         </div>
     </div>
 
-    @push('scripts')
     <script>
     document.addEventListener('DOMContentLoaded', function () {
         const columns = document.querySelectorAll('.kanban-column');
@@ -63,15 +76,15 @@
         columns.forEach(column => {
             column.addEventListener('dragover', function (event) {
                 event.preventDefault();
-                this.classList.add('bg-gray-200', 'rounded-lg');
+                this.classList.add('bg-slate-200', 'rounded-lg');
             });
 
             column.addEventListener('dragleave', function () {
-                this.classList.remove('bg-gray-200', 'rounded-lg');
+                this.classList.remove('bg-slate-200', 'rounded-lg');
             });
 
             column.addEventListener('drop', function () {
-                this.classList.remove('bg-gray-200', 'rounded-lg');
+                this.classList.remove('bg-slate-200', 'rounded-lg');
                 if (!draggedCard) return;
 
                 this.appendChild(draggedCard);
@@ -99,5 +112,4 @@
         });
     });
     </script>
-    @endpush
 </x-app-layout>

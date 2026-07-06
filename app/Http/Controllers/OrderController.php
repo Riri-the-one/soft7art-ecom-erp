@@ -120,6 +120,10 @@ class OrderController extends Controller
             }
         }
 
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Statut mis à jour']);
+        }
+
         return back()->with('success', "Statut de la commande mis à jour de {$oldStatus} à {$newStatus}.");
     }
 

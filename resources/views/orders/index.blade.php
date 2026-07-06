@@ -1,38 +1,41 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="text-3xl font-bold tracking-tight text-white">
             {{ __('Suivi des Commandes Clients') }}
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-12 bg-slate-50">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
+            <div class="mb-8 rounded-[2rem] bg-gradient-to-r from-purple-600 via-rose-500 to-teal-400 p-8 text-white shadow-[0_30px_60px_-30px_rgba(124,58,237,0.8)]">
+                <h1 class="text-3xl font-bold">Suivi des Commandes</h1>
+                <p class="mt-2 max-w-2xl text-slate-100">Filtrez, recherchez et passez en Kanban pour une visibilité instantanée sur le flux des commandes.</p>
+            </div>
+
+            <div class="bg-white/95 overflow-hidden shadow-[0_25px_50px_-25px_rgba(15,23,42,0.25)] sm:rounded-[2rem] border border-slate-200">
+                <div class="p-6">
 
                     <!-- Formulaire de recherche et filtrage -->
                     <form method="GET" action="{{ route('orders.index') }}" class="mb-6" id="search-form">
-                        <div class="flex flex-wrap gap-4 items-end">
-                            <!-- Champ de recherche -->
-                            <div class="flex-1 min-w-xs">
-                                <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Rechercher</label>
+                        <div class="grid gap-4 lg:grid-cols-5">
+                            <div class="lg:col-span-2">
+                                <label for="search" class="block text-sm font-semibold text-slate-600 mb-2">Rechercher</label>
                                 <input 
                                     type="text" 
                                     name="search" 
                                     id="search"
-                                    placeholder="N° commande ou nom client..."
+                                    placeholder="N° commande ou client..."
                                     value="{{ request('search') }}"
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    class="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-700 shadow-sm focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-200"
                                 >
                             </div>
 
-                            <!-- Sélecteur de statut -->
-                            <div class="flex-1 min-w-xs">
-                                <label for="status" class="block text-sm font-medium text-gray-700 mb-2">Statut</label>
+                            <div>
+                                <label for="status" class="block text-sm font-semibold text-slate-600 mb-2">Statut</label>
                                 <select 
                                     name="status" 
                                     id="status"
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    class="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-700 shadow-sm focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-200"
                                 >
                                     <option value="">Tous les statuts</option>
                                     <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>En attente</option>
@@ -43,65 +46,68 @@
                                 </select>
                             </div>
 
-                            <!-- Date de début -->
-                            <div class="flex-1 min-w-xs">
-                                <label for="date_from" class="block text-sm font-medium text-gray-700 mb-2">Du</label>
+                            <div>
+                                <label for="date_from" class="block text-sm font-semibold text-slate-600 mb-2">Du</label>
                                 <input
                                     type="date"
                                     name="date_from"
                                     id="date_from"
                                     value="{{ request('date_from') }}"
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    class="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-700 shadow-sm focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-200"
                                 >
                             </div>
 
                             <!-- Date de fin -->
-                            <div class="flex-1 min-w-xs">
-                                <label for="date_to" class="block text-sm font-medium text-gray-700 mb-2">Au</label>
+                            <div>
+                                <label for="date_to" class="block text-sm font-semibold text-slate-600 mb-2">Au</label>
                                 <input
                                     type="date"
                                     name="date_to"
                                     id="date_to"
                                     value="{{ request('date_to') }}"
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    class="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-700 shadow-sm focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-200"
                                 >
                             </div>
 
                             <!-- Boutons d'action -->
-                            <div class="flex flex-wrap gap-2 items-end">
-                                @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('agent'))
-                                    <a 
-                                        href="{{ route('orders.create') }}" 
-                                        class="px-6 py-2 bg-blue-600 text-white font-medium rounded-md text-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    >
-                                        Nouvelle Commande
+                            <div class="lg:col-span-5 flex flex-wrap gap-3 items-center justify-between">
+                                <div class="flex flex-wrap gap-3">
+                                    @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('agent'))
+                                        <a 
+                                            href="{{ route('orders.create') }}" 
+                                            class="inline-flex items-center rounded-3xl bg-gradient-to-r from-purple-600 to-teal-400 text-white font-semibold px-5 py-3 shadow-lg transition hover:shadow-xl"
+                                        >
+                                            Nouvelle Commande
+                                        </a>
+                                    @endif
+                                    <a href="{{ route('orders.kanban') }}" class="inline-flex items-center rounded-3xl bg-slate-900 text-white font-semibold px-5 py-3 shadow-lg transition hover:bg-slate-800">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"></path>
+                                        </svg>
+                                        Vue Kanban
                                     </a>
-                                @endif
-                                <a href="{{ route('orders.kanban') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 disabled:opacity-25 transition ease-in-out duration-150 shadow-sm ml-4">
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"></path>
-                                    </svg>
-                                    Vue Kanban
-                                </a>
-                                <a 
-                                    href="{{ route('orders.index') }}" 
-                                    class="px-6 py-2 bg-gray-300 text-gray-900 font-medium rounded-md text-sm hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500"
-                                >
-                                    Réinitialiser
-                                </a>
-                                @if(in_array(auth()->user()->role, ['super_admin', 'agent']))
+                                </div>
+                                <div class="flex flex-wrap gap-3">
                                     <a 
-                                        href="{{ route('orders.export') }}" 
-                                        class="px-6 py-2 bg-gray-900 text-white font-medium rounded-md text-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-700"
+                                        href="{{ route('orders.index') }}" 
+                                        class="inline-flex items-center rounded-3xl border border-slate-200 bg-slate-100 text-slate-700 px-5 py-3 text-sm font-medium hover:bg-slate-200"
                                     >
-                                        Exporter en CSV
+                                        Réinitialiser
                                     </a>
-                                @endif
+                                    @if(in_array(auth()->user()->role, ['super_admin', 'agent']))
+                                        <a 
+                                            href="{{ route('orders.export') }}" 
+                                            class="inline-flex items-center rounded-3xl bg-gradient-to-r from-purple-600 to-teal-400 text-white font-semibold px-5 py-3 shadow-lg transition hover:shadow-xl"
+                                        >
+                                            Exporter en CSV
+                                        </a>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </form>
 
-                    <div id="table-container">
+                    <div id="table-container" class="rounded-[2rem] border border-slate-200 bg-slate-50 shadow-sm overflow-hidden">
                         @include('orders.partials.table')
                     </div>
 

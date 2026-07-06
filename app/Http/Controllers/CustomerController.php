@@ -22,6 +22,10 @@ class CustomerController extends Controller
 
         $customers = $query->paginate(15);
 
+        if ($request->ajax()) {
+            return view('customers.partials.table', compact('customers'))->render();
+        }
+
         return view('customers.index', compact('customers'));
     }
 

@@ -131,7 +131,7 @@ class OrderController extends Controller
     {
         $order->load(['products', 'customer']);
         
-        $pdf = Pdf::loadView('orders.invoice', compact('order'));
+        $pdf = Pdf::setOption(['isRemoteEnabled' => true])->loadView('orders.invoice', compact('order'));
         return $pdf->download('facture_commande_' . $order->id . '.pdf');
     }
 

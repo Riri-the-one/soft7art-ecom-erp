@@ -1,4 +1,4 @@
-        <nav class="w-72 bg-white/95 border border-slate-200 shadow-[0_25px_50px_-25px_rgba(15,23,42,0.25)] h-full flex flex-col backdrop-blur">
+        <nav class="w-72 bg-white/95 border border-slate-200 shadow-[0_25px_50px_-25px_rgba(15,23,42,0.25)] h-full flex flex-col backdrop-blur dark:bg-gray-900 dark:text-gray-100">
             <!-- Haut : Logo et Liens -->
             <div class="flex-1 flex flex-col overflow-y-auto">
                 <!-- Logo Section -->

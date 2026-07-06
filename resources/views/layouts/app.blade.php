@@ -14,8 +14,8 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased">
-        <div x-data="{ sidebarOpen: false }" class="flex h-screen bg-slate-100 font-sans antialiased text-slate-900">
+    <body class="font-sans antialiased bg-slate-100 text-slate-900 dark:bg-gray-900 dark:text-gray-100">
+        <div x-data="{ sidebarOpen: false }" class="flex h-screen bg-slate-100 font-sans antialiased text-slate-900 dark:bg-gray-900 dark:text-gray-100">
             <div x-show="sidebarOpen" x-transition.opacity class="fixed inset-0 z-40 bg-slate-900/40 md:hidden" @click="sidebarOpen = false"></div>
 
             @include('layouts.navigation')

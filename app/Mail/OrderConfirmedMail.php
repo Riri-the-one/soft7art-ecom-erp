@@ -50,7 +50,7 @@ class OrderConfirmedMail extends Mailable
     {
         return [
             Attachment::fromData(
-                fn () => Pdf::loadView('orders.invoice', ['order' => $this->order])->output(),
+                fn () => Pdf::setOption(['isRemoteEnabled' => true])->loadView('orders.invoice', ['order' => $this->order])->output(),
                 'facture_' . $this->order->id . '.pdf'
             )->withMime('application/pdf'),
         ];

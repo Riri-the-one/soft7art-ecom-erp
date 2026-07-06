@@ -22,7 +22,7 @@
             <div class="bg-white/95 overflow-hidden shadow-[0_25px_50px_-25px_rgba(15,23,42,0.25)] sm:rounded-[2rem] border border-slate-200">
                 <div class="p-6">
                     <form method="GET" action="{{ route('customers.index') }}" class="mb-6 flex flex-col gap-4 md:flex-row md:items-center">
-                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Rechercher un client..." class="flex-1 rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-700 shadow-sm focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-200">
+                        <input id="searchInput" type="text" name="search" value="{{ request('search') }}" placeholder="Rechercher un client..." class="flex-1 rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-700 shadow-sm focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-200">
                         <button type="submit" class="inline-flex items-center justify-center rounded-3xl bg-gradient-to-r from-purple-600 to-teal-400 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:shadow-xl">Rechercher</button>
                     </form>
 
@@ -91,4 +91,31 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const input = document.getElementById('searchInput');
+            const tableBody = document.querySelector('table tbody');
+
+            if (!input || !tableBody) return;
+
+            let timeout;
+            input.addEventListener('input', function () {
+                clearTimeout(timeout);
+                timeout = setTimeout(async () => {
+                    const query = input.value.trim();
+                    const url = new URL("{{ route('customers.index') }}", window.location.origin);
+                    if (query) url.searchParams.set('search', query);
+
+                    const response = await fetch(url.toString(), {
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    });
+
+                    if (!response.ok) return;
+                    const html = await response.text();
+                    tableBody.innerHTML = html;
+                }, 250);
+            });
+        });
+    </script>
 </x-app-layout>

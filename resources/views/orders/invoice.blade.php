@@ -203,6 +203,10 @@
                 <h2>FACTURE</h2>
                 <div class="invoice-number">N° {{ str_pad($order->id, 5, '0', STR_PAD_LEFT) }}</div>
                 <div class="invoice-date">{{ now()->format('d/m/Y') }}</div>
+                <br>
+                <div style="margin-top: 10px;">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data={{ urlencode(route('orders.show', $order->id)) }}" width="100" height="100">
+                </div>
             </div>
         </div>
 

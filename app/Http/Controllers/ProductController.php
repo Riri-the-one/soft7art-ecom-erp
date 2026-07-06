@@ -27,6 +27,10 @@ class ProductController extends Controller
 
         $products = $query->paginate(10)->withQueryString();
 
+        if ($request->ajax()) {
+            return view('products.partials.table', compact('products'))->render();
+        }
+
         return view('products.index', compact('products'));
     }
 

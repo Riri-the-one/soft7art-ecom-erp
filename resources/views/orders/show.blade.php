@@ -107,13 +107,28 @@
                             @if($order->activityLogs->isEmpty())
                                 <p class="text-sm text-gray-600">Aucun changement de statut pour le moment.</p>
                             @else
-                                <div class="space-y-4">
-                                    @foreach($order->activityLogs as $log)
-                                        <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
-                                            <p class="text-sm text-gray-800">{{ $log->user?->name ?? 'Utilisateur inconnu' }} a modifié le statut de <span class="font-semibold">{{ $log->old_status }}</span> à <span class="font-semibold">{{ $log->new_status }}</span>.</p>
-                                            <p class="mt-1 text-xs text-gray-500">Le {{ $log->created_at->format('d/m/Y H:i') }}</p>
-                                        </div>
-                                    @endforeach
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-5 w-px bg-gray-200"></div>
+                                    <div class="space-y-6 pl-12">
+                                        @foreach($order->activityLogs as $log)
+                                            <div class="relative">
+                                                <span class="absolute left-0 top-1.5 flex h-3.5 w-3.5">
+                                                    <span class="absolute inline-flex h-full w-full rounded-full bg-indigo-600 opacity-75"></span>
+                                                    <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-white border border-indigo-600"></span>
+                                                </span>
+                                                <div class="rounded-xl border border-gray-200 bg-gray-50 p-4 shadow-sm">
+                                                    <div class="flex items-center justify-between gap-4 text-sm text-gray-500">
+                                                        <span>{{ $log->created_at->format('d/m/Y H:i') }}</span>
+                                                        <span class="rounded-full bg-indigo-100 text-indigo-700 px-2 py-1 text-xs font-semibold uppercase tracking-wide">{{ $log->user?->name ?? 'Utilisateur' }}</span>
+                                                    </div>
+                                                    <div class="mt-3 text-sm text-gray-700">
+                                                        <p class="font-medium text-gray-900">{{ ucfirst($log->old_status) }} → {{ ucfirst($log->new_status) }}</p>
+                                                        <p class="mt-2 text-sm text-gray-600">Statut modifié par {{ $log->user?->name ?? 'Utilisateur inconnu' }}.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
                                 </div>
                             @endif
                         </div>

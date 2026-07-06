@@ -20,12 +20,24 @@
 
                 <!-- Navigation Links -->
                 <div class="flex flex-col space-y-1 mt-2 px-4">
+                    @php
+                        use App\Models\Product;
+                        $lowStockCount = Product::where('stock_quantity', '<', 5)->count();
+                    @endphp
+
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="w-full block">
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
                     <x-nav-link :href="route('products.index')" :active="request()->routeIs('products.*')" class="w-full block">
-                        {{ __('Catalogue') }}
+                        <span class="flex items-center justify-between w-full">
+                            <span>{{ __('Catalogue') }}</span>
+                            @if($lowStockCount > 0)
+                                <span class="ml-2 inline-flex items-center rounded-full bg-red-600 px-2.5 py-0.5 text-xs font-semibold text-white">
+                                    {{ $lowStockCount }}
+                                </span>
+                            @endif
+                        </span>
                     </x-nav-link>
 
                     <x-nav-link :href="route('orders.index')" :active="request()->routeIs('orders.*')" class="w-full block">

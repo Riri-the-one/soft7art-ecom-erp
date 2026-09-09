@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCustomerRequest;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 
@@ -12,6 +13,8 @@ class CustomerController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Customer::class);
+
         $query = Customer::withCount('orders')
             ->with('orders')
             ->latest();
@@ -31,25 +34,24 @@ class CustomerController extends Controller
 
     public function create()
     {
+        $this->authorize('create', Customer::class);
+
         return view('customers.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreCustomerRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:customers,email',
-            'phone' => 'nullable|string|max:20',
-            'address' => 'nullable|string|max:500',
-        ]);
+        $this->authorize('create', Customer::class);
 
-        Customer::create($validated);
+        Customer::create($request->validated());
 
         return redirect()->route('customers.index')->with('success', 'Client créé avec succès.');
     }
 
     public function show(Customer $customer)
     {
+        $this->authorize('view', $customer);
+
         $customer->load('orders');
 
         return view('customers.show', compact('customer'));

@@ -21,13 +21,18 @@ class Customer extends Model
 
     public function getDeliveryRateAttribute(): int
     {
-        $total = $this->orders()->count();
+        // On réutilise la relation 'orders' si elle est déjà chargée (eager loading
+        // fait par CustomerController::index()/show()) pour éviter 2 requêtes
+        // supplémentaires par client affiché (problème N+1).
+        $orders = $this->relationLoaded('orders') ? $this->orders : $this->orders()->get();
+
+        $total = $orders->count();
         if ($total === 0) {
             return 0;
         }
 
-        $delivered = $this->orders()->where('status', 'delivered')->count();
+        $delivered = $orders->where('status', 'delivered')->count();
 
-        return round(($delivered / $total) * 100, 0);
+        return (int) round(($delivered / $total) * 100);
     }
 }

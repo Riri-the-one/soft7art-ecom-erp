@@ -43,33 +43,41 @@ class ProductController extends Controller
     // ... garde la méthode index() existante ...
 
     public function create()
-{
-    return view('products.create');
-}
+    {
+        $this->authorize('manage', Product::class);
 
-public function store(StoreProductRequest $request)
-{
-    // 1. Validation stricte des données selon les règles métier
-    $validated = $request->validated();
+        return view('products.create');
+    }
 
-    // 2. Création du produit dans la base de données
-    \App\Models\Product::create($validated);
+    public function store(StoreProductRequest $request)
+    {
+        $this->authorize('manage', Product::class);
 
-    // 3. Redirection vers le catalogue avec un message de succès
-    return redirect()->route('products.index')->with('success', 'Produit ajouté au catalogue avec succès !');
-}
+        // 1. Validation stricte des données selon les règles métier
+        $validated = $request->validated();
 
-public function edit(Product $product)
-{
-    return view('products.edit', compact('product'));
-}
+        // 2. Création du produit dans la base de données
+        Product::create($validated);
 
-public function update(UpdateProductRequest $request, Product $product)
-{
-    $validated = $request->validated();
+        // 3. Redirection vers le catalogue avec un message de succès
+        return redirect()->route('products.index')->with('success', 'Produit ajouté au catalogue avec succès !');
+    }
 
-    $product->update($validated);
+    public function edit(Product $product)
+    {
+        $this->authorize('manage', Product::class);
 
-    return redirect()->route('products.index')->with('success', 'Produit mis à jour avec succès !');
-}
+        return view('products.edit', compact('product'));
+    }
+
+    public function update(UpdateProductRequest $request, Product $product)
+    {
+        $this->authorize('manage', Product::class);
+
+        $validated = $request->validated();
+
+        $product->update($validated);
+
+        return redirect()->route('products.index')->with('success', 'Produit mis à jour avec succès !');
+    }
 }

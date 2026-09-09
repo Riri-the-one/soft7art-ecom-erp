@@ -1,90 +1,90 @@
-        <nav class="w-72 bg-white/95 border border-slate-200 shadow-[0_25px_50px_-25px_rgba(15,23,42,0.25)] h-full flex flex-col backdrop-blur dark:bg-gray-900 dark:text-gray-100">
-            <!-- Haut : Logo et Liens -->
-            <div class="flex-1 flex flex-col overflow-y-auto">
-                <!-- Logo Section -->
-                <div class="px-6 py-6 border-b border-slate-200">
-                    <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
-                        <x-application-logo class="block h-10 w-auto fill-current text-purple-600" />
-                        <span class="text-lg font-semibold text-slate-900">{{ config('app.name', 'Laravel') }}</span>
-                    </a>
-                </div>
+<nav
+    :class="[sidebarCollapsed ? 'w-20' : 'w-72', sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0']"
+    class="fixed inset-y-0 left-0 z-50 flex h-full flex-col border-r border-slate-200 bg-white text-slate-700 transition-all duration-200 md:static md:z-auto dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100"
+>
+    <!-- Haut : Logo et Liens -->
+    <div class="flex-1 flex flex-col overflow-y-auto overflow-x-hidden">
+        <!-- Logo Section -->
+        <div class="flex items-center gap-3 px-5 py-6" :class="sidebarCollapsed ? 'justify-center px-2' : ''">
+            <a href="{{ route('dashboard') }}" class="flex items-center gap-3" :class="sidebarCollapsed ? 'justify-center' : ''">
+                <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-md shadow-indigo-500/30">
+                    <i data-lucide="boxes" class="h-5 w-5"></i>
+                </span>
+                <span x-show="!sidebarCollapsed" x-transition class="text-lg font-semibold text-slate-900 dark:text-white truncate">{{ config('app.name', 'Laravel') }}</span>
+            </a>
+        </div>
 
-                <!-- Action Button -->
-                @if(Auth::user()->hasRole('agent') || Auth::user()->hasRole('super_admin'))
-                    <div class="px-5 py-5">
-                        <a href="{{ route('orders.create') }}" class="block w-full text-center bg-gradient-to-r from-purple-600 to-teal-400 text-white rounded-2xl py-3 shadow-lg font-semibold text-sm transition hover:shadow-xl">
-                            Nouvelle Commande
-                        </a>
-                    </div>
+        <!-- Action Button -->
+        @if(Auth::user()->hasRole('agent') || Auth::user()->hasRole('super_admin'))
+            <div class="px-4 pb-4" :class="sidebarCollapsed ? 'px-2' : ''">
+                <a href="{{ route('orders.create') }}" class="flex items-center justify-center gap-2 w-full rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 py-2.5 text-sm font-semibold text-white shadow-md shadow-indigo-900/20 dark:shadow-indigo-900/40 transition hover:shadow-lg" :class="sidebarCollapsed ? 'px-0' : 'px-4'">
+                    <i data-lucide="plus" class="h-4 w-4 shrink-0"></i>
+                    <span x-show="!sidebarCollapsed" x-transition class="truncate">Nouvelle Commande</span>
+                </a>
+            </div>
+        @endif
+
+        <!-- Navigation Links -->
+        <div class="flex flex-col gap-1 px-3">
+            @php
+                $lowStockCount = \App\Models\Product::where('stock_quantity', '<=', 5)->count();
+            @endphp
+
+            <a href="{{ route('dashboard') }}"
+               class="group flex items-center gap-3 rounded-xl border-l-2 px-3 py-2.5 text-sm font-medium transition-colors {{ request()->routeIs('dashboard') ? 'border-indigo-500 bg-indigo-50 text-indigo-700 dark:border-indigo-400 dark:bg-indigo-500/15 dark:text-white' : 'border-transparent text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white' }}"
+               :class="sidebarCollapsed ? 'justify-center px-0' : ''">
+                <i data-lucide="layout-dashboard" class="h-5 w-5 shrink-0"></i>
+                <span x-show="!sidebarCollapsed" x-transition class="truncate">{{ __('Dashboard') }}</span>
+            </a>
+
+            <div class="relative">
+                <a href="{{ route('products.index') }}"
+                   class="group flex items-center gap-3 rounded-xl border-l-2 px-3 py-2.5 text-sm font-medium transition-colors {{ request()->routeIs('products.*') ? 'border-indigo-500 bg-indigo-50 text-indigo-700 dark:border-indigo-400 dark:bg-indigo-500/15 dark:text-white' : 'border-transparent text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white' }}"
+                   :class="sidebarCollapsed ? 'justify-center px-0' : ''">
+                    <i data-lucide="package" class="h-5 w-5 shrink-0"></i>
+                    <span x-show="!sidebarCollapsed" x-transition class="truncate flex-1">{{ __('Catalogue') }}</span>
+                    @if($lowStockCount > 0)
+                        <span x-show="!sidebarCollapsed" x-transition class="inline-flex items-center rounded-full bg-red-500 px-2 py-0.5 text-xs font-semibold text-white">{{ $lowStockCount }}</span>
+                    @endif
+                </a>
+                @if($lowStockCount > 0)
+                    <span x-show="sidebarCollapsed" class="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500"></span>
                 @endif
-
-                <!-- Navigation Links -->
-                <div class="flex flex-col space-y-1 mt-2 px-4">
-                    @php
-                        $lowStockCount = \App\Models\Product::where('stock_quantity', '<=', 5)->count();
-                    @endphp
-
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="w-full block">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
-
-                    <div class="flex items-center justify-between gap-2">
-                        <x-nav-link :href="route('products.index')" :active="request()->routeIs('products.*')" class="flex-1">
-                            {{ __('Catalogue') }}
-                        </x-nav-link>
-                        @if($lowStockCount > 0)
-                            <a href="{{ route('products.index', ['stock' => 'critical']) }}" class="inline-flex items-center rounded-full bg-red-600 px-2.5 py-0.5 text-xs font-semibold text-white hover:bg-red-700 transition">
-                                {{ $lowStockCount }}
-                            </a>
-                        @endif
-                    </div>
-
-                    <x-nav-link :href="route('orders.index')" :active="request()->routeIs('orders.index') || request()->routeIs('orders.show')" class="w-full block">
-                        {{ __('Commandes') }}
-                    </x-nav-link>
-
-
-                    @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('agent'))
-                        <x-nav-link :href="route('customers.index')" :active="request()->routeIs('customers.*')" class="w-full block">
-                            {{ __('Annuaire Clients') }}
-                        </x-nav-link>
-                    @endif
-
-                    @if(Auth::user()->hasRole('super_admin'))
-                        <x-nav-link :href="route('statistics.index')" :active="request()->routeIs('statistics.*')" class="w-full block">
-                            {{ __('Statistiques') }}
-                        </x-nav-link>
-                    @endif
-                </div>
             </div>
 
-            <!-- Bas : Profile Section -->
-            <div class="p-4 border-t border-slate-200 mt-auto dark:border-gray-700">
-                <button id="theme-toggle" type="button" class="mt-4 mb-4 w-full rounded-2xl border border-slate-200 bg-slate-100 px-4 py-3 text-sm font-medium text-slate-700 transition-colors duration-200 hover:bg-slate-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 flex items-center justify-between">
-                    <span class="flex items-center gap-3">
-                        <span class="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-purple-500 to-teal-400 text-white shadow-sm">
-                            <svg id="theme-toggle-dark-icon" class="hidden h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
-                            <svg id="theme-toggle-light-icon" class="hidden h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
-                        </span>
-                        <span id="theme-toggle-text">Mode Sombre</span>
-                    </span>
-                    <span class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border border-slate-300 bg-white transition-colors duration-200 dark:border-gray-600 dark:bg-slate-700">
-                        <span id="theme-toggle-thumb" class="absolute left-1 top-1 h-4 w-4 rounded-full bg-slate-700 shadow transition-transform duration-200 dark:bg-white"></span>
-                    </span>
-                </button>
+            <a href="{{ route('orders.index') }}"
+               class="group flex items-center gap-3 rounded-xl border-l-2 px-3 py-2.5 text-sm font-medium transition-colors {{ (request()->routeIs('orders.index') || request()->routeIs('orders.show')) ? 'border-indigo-500 bg-indigo-50 text-indigo-700 dark:border-indigo-400 dark:bg-indigo-500/15 dark:text-white' : 'border-transparent text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white' }}"
+               :class="sidebarCollapsed ? 'justify-center px-0' : ''">
+                <i data-lucide="shopping-cart" class="h-5 w-5 shrink-0"></i>
+                <span x-show="!sidebarCollapsed" x-transition class="truncate">{{ __('Commandes') }}</span>
+            </a>
 
-                <div class="text-sm text-slate-700 dark:text-slate-300">{{ Auth::user()->name }}</div>
-                <div class="text-xs text-slate-400 mb-4">{{ Auth::user()->email }}</div>
+            @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('agent'))
+                <a href="{{ route('customers.index') }}"
+                   class="group flex items-center gap-3 rounded-xl border-l-2 px-3 py-2.5 text-sm font-medium transition-colors {{ request()->routeIs('customers.*') ? 'border-indigo-500 bg-indigo-50 text-indigo-700 dark:border-indigo-400 dark:bg-indigo-500/15 dark:text-white' : 'border-transparent text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white' }}"
+                   :class="sidebarCollapsed ? 'justify-center px-0' : ''">
+                    <i data-lucide="users" class="h-5 w-5 shrink-0"></i>
+                    <span x-show="!sidebarCollapsed" x-transition class="truncate">{{ __('Annuaire Clients') }}</span>
+                </a>
+            @endif
 
-                <x-responsive-nav-link :href="route('profile.edit')" class="block mb-3 text-slate-700 hover:text-purple-600">
-                    {{ __('Profile') }}
-                </x-responsive-nav-link>
+            @if(Auth::user()->hasRole('super_admin'))
+                <a href="{{ route('statistics.index') }}"
+                   class="group flex items-center gap-3 rounded-xl border-l-2 px-3 py-2.5 text-sm font-medium transition-colors {{ request()->routeIs('statistics.*') ? 'border-indigo-500 bg-indigo-50 text-indigo-700 dark:border-indigo-400 dark:bg-indigo-500/15 dark:text-white' : 'border-transparent text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white' }}"
+                   :class="sidebarCollapsed ? 'justify-center px-0' : ''">
+                    <i data-lucide="bar-chart-3" class="h-5 w-5 shrink-0"></i>
+                    <span x-show="!sidebarCollapsed" x-transition class="truncate">{{ __('Statistiques') }}</span>
+                </a>
+            @endif
+        </div>
+    </div>
 
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <x-responsive-nav-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
-                </form>
-            </div>
-        </nav>
+    <!-- Bas : réduire la sidebar -->
+    <div class="border-t border-slate-200 p-3 dark:border-slate-800">
+        <button @click="toggleCollapsed()" type="button" class="hidden md:flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white" :class="sidebarCollapsed ? 'justify-center px-0' : ''">
+            <i data-lucide="panel-left-close" class="h-5 w-5 shrink-0" x-show="!sidebarCollapsed"></i>
+            <i data-lucide="panel-left-open" class="h-5 w-5 shrink-0" x-show="sidebarCollapsed"></i>
+            <span x-show="!sidebarCollapsed" x-transition class="truncate">Réduire</span>
+        </button>
+    </div>
+</nav>

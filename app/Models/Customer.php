@@ -10,7 +10,7 @@ class Customer extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'email', 'phone', 'city', 'address', 'is_blacklisted',
+        'name', 'email', 'phone', 'city', 'address', 'is_blacklisted'
     ];
 
     // Un client peut passer plusieurs commandes
@@ -34,5 +34,41 @@ class Customer extends Model
         $delivered = $orders->where('status', 'delivered')->count();
 
         return (int) round(($delivered / $total) * 100);
+    }
+
+    /**
+     * Numéro de téléphone du client formaté pour un lien WhatsApp (wa.me),
+     * sans le "+" (format attendu par l'API wa.me : indicatif pays + numéro).
+     * Gère le format local marocain (0XXXXXXXXX) et les formats déjà
+     * internationaux (+212XXXXXXXXX ou 212XXXXXXXXX).
+     */
+    public function getWhatsappNumberAttribute(): ?string
+    {
+        if (! $this->phone) {
+            return null;
+        }
+
+        // On retire tout sauf les chiffres et un éventuel "+" en tête
+        $digits = preg_replace('/[^0-9+]/', '', $this->phone);
+
+        if ($digits === '' || $digits === '+') {
+            return null;
+        }
+
+        if (str_starts_with($digits, '+')) {
+            return substr($digits, 1);
+        }
+
+        if (str_starts_with($digits, '212')) {
+            return $digits;
+        }
+
+        // Format local marocain : 0X XX XX XX XX -> on retire le 0 initial
+        // et on préfixe l'indicatif international du Maroc.
+        if (str_starts_with($digits, '0')) {
+            return '212' . substr($digits, 1);
+        }
+
+        return $digits;
     }
 }

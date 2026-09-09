@@ -19,15 +19,18 @@ class OrderController extends Controller
     {
         $this->authorize('viewAny', Order::class);
 
-        $query = Order::with(['customer', 'user'])->latest();
+        // 'customer.orders' est chargé en plus pour permettre à l'accessor
+        // Customer::delivery_rate (badge "Risque élevé" affiché dans la table)
+        // de réutiliser cette relation déjà en mémoire, sans requête N+1 par ligne.
+        $query = Order::with(['customer.orders', 'user'])->latest();
 
         // Filtre de recherche par ID commande ou nom client
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where('id', 'like', '%'.$search.'%')
-                ->orWhereHas('customer', function ($q) use ($search) {
-                    $q->where('name', 'like', '%'.$search.'%');
-                });
+            $query->where('id', 'like', '%' . $search . '%')
+                  ->orWhereHas('customer', function ($q) use ($search) {
+                      $q->where('name', 'like', '%' . $search . '%');
+                  });
         }
 
         // Filtre par statut
@@ -56,7 +59,6 @@ class OrderController extends Controller
     {
         $this->authorize('viewAny', Order::class);
         $orders = Order::with('customer')->latest()->get();
-
         return view('orders.kanban', compact('orders'));
     }
 
@@ -137,10 +139,9 @@ class OrderController extends Controller
     public function invoice(Order $order)
     {
         $order->load(['products', 'customer']);
-
+        
         $pdf = Pdf::setOption(['isRemoteEnabled' => true])->loadView('orders.invoice', compact('order'));
-
-        return $pdf->download('facture_commande_'.$order->id.'.pdf');
+        return $pdf->download('facture_commande_' . $order->id . '.pdf');
     }
 
     public function exportCsv()

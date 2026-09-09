@@ -7,15 +7,19 @@ use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
-use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
-    Route::get('register', [RegisteredUserController::class, 'create'])
-        ->name('register');
-
-    Route::post('register', [RegisteredUserController::class, 'store']);
+    // Inscription publique désactivée : le cahier des charges confie la gestion
+    // des utilisateurs (employés) exclusivement au Super Admin. Les comptes sont
+    // créés via le seeder / directement en base, pas via un formulaire ouvert
+    // à tous. La vue 'auth.register' est conservée mais n'est plus routée
+    // (Route::has('register') retourne false, ce que welcome.blade.php gère déjà).
+    // Route::get('register', [RegisteredUserController::class, 'create'])
+    //     ->name('register');
+    //
+    // Route::post('register', [RegisteredUserController::class, 'store']);
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');

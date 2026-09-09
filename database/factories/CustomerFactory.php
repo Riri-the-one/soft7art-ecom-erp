@@ -24,7 +24,7 @@ class CustomerFactory extends Factory
             'city' => fake()->city(),
             'address' => fake()->streetAddress(),
             // 10% de chances qu'un client soit blacklisté pour tes tests
-            'is_blacklisted' => fake()->boolean(10), 
+            'is_blacklisted' => fake()->boolean(10),
         ];
     }
 }

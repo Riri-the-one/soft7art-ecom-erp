@@ -14,17 +14,17 @@ return new class extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            
+
             // Ajout de la colonne email avec la contrainte d'unicité
             $table->string('email')->unique();
-            
+
             $table->string('phone');
             $table->string('city');
             $table->text('address');
-            
+
             // Par défaut, un nouveau client n'est pas blacklisté (false)
-            $table->boolean('is_blacklisted')->default(false); 
-            
+            $table->boolean('is_blacklisted')->default(false);
+
             $table->timestamps();
         });
     }

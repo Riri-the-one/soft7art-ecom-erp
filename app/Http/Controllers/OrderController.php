@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderStatusRequest;
 use App\Mail\OrderConfirmedMail;
+use App\Models\Customer;
 use App\Models\Order;
+use App\Models\Product;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
@@ -21,10 +24,10 @@ class OrderController extends Controller
         // Filtre de recherche par ID commande ou nom client
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where('id', 'like', '%' . $search . '%')
-                  ->orWhereHas('customer', function ($q) use ($search) {
-                      $q->where('name', 'like', '%' . $search . '%');
-                  });
+            $query->where('id', 'like', '%'.$search.'%')
+                ->orWhereHas('customer', function ($q) use ($search) {
+                    $q->where('name', 'like', '%'.$search.'%');
+                });
         }
 
         // Filtre par statut
@@ -51,8 +54,9 @@ class OrderController extends Controller
 
     public function kanban()
     {
-        $this->authorize('viewAny', \App\Models\Order::class);
-        $orders = \App\Models\Order::with('customer')->latest()->get();
+        $this->authorize('viewAny', Order::class);
+        $orders = Order::with('customer')->latest()->get();
+
         return view('orders.kanban', compact('orders'));
     }
 
@@ -67,8 +71,8 @@ class OrderController extends Controller
 
     public function create()
     {
-        $customers = \App\Models\Customer::all();
-        $products = \App\Models\Product::all();
+        $customers = Customer::all();
+        $products = Product::all();
 
         return view('orders.create', compact('customers', 'products'));
     }
@@ -77,22 +81,29 @@ class OrderController extends Controller
     {
         $validated = $request->validated();
 
-        $product = \App\Models\Product::find($validated['product_id']);
+        $product = Product::find($validated['product_id']);
         $subtotal = $product->selling_price * $validated['quantity'];
         $totalAmount = $subtotal + $validated['delivery_fee'];
 
-        $order = \App\Models\Order::create([
-            'customer_id' => $validated['customer_id'],
-            'user_id' => auth()->id(),
-            'status' => 'pending',
-            'delivery_fee' => $validated['delivery_fee'],
-            'total_amount' => $totalAmount,
-        ]);
+        // La création de la commande et l'attachement du produit en pivot doivent
+        // réussir ensemble : sans transaction, un échec sur le attach() laisserait
+        // une commande "fantôme" sans aucun produit rattaché.
+        $order = DB::transaction(function () use ($validated, $product, $totalAmount) {
+            $order = Order::create([
+                'customer_id' => $validated['customer_id'],
+                'user_id' => auth()->id(),
+                'status' => 'pending',
+                'delivery_fee' => $validated['delivery_fee'],
+                'total_amount' => $totalAmount,
+            ]);
 
-        $order->products()->attach($validated['product_id'], [
-            'quantity' => $validated['quantity'],
-            'unit_price' => $product->selling_price,
-        ]);
+            $order->products()->attach($validated['product_id'], [
+                'quantity' => $validated['quantity'],
+                'unit_price' => $product->selling_price,
+            ]);
+
+            return $order;
+        });
 
         return redirect()->route('orders.show', $order)->with('success', 'Commande créée avec succès.');
     }
@@ -126,9 +137,10 @@ class OrderController extends Controller
     public function invoice(Order $order)
     {
         $order->load(['products', 'customer']);
-        
+
         $pdf = Pdf::setOption(['isRemoteEnabled' => true])->loadView('orders.invoice', compact('order'));
-        return $pdf->download('facture_commande_' . $order->id . '.pdf');
+
+        return $pdf->download('facture_commande_'.$order->id.'.pdf');
     }
 
     public function exportCsv()

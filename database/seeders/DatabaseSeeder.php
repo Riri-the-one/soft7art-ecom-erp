@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\User;
 use App\Models\Customer;
-use App\Models\Product;
 use App\Models\Order;
+use App\Models\Product;
+use App\Models\User;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
@@ -57,19 +57,19 @@ class DatabaseSeeder extends Seeder
 
             foreach ($orderProducts as $product) {
                 $quantity = rand(1, 3);
-                
+
                 // On attache le produit à la commande (Table Pivot OrderProduct)
                 $order->products()->attach($product->id, [
                     'quantity' => $quantity,
-                    'unit_price' => $product->selling_price
+                    'unit_price' => $product->selling_price,
                 ]);
-                
+
                 $totalAmount += $quantity * $product->selling_price;
             }
 
             // On met à jour le prix total de la commande
             $order->update([
-                'total_amount' => $totalAmount + 30.00 // Total produits + frais de livraison fixes
+                'total_amount' => $totalAmount + 30.00, // Total produits + frais de livraison fixes
             ]);
         }
     }

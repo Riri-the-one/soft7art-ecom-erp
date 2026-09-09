@@ -14,7 +14,7 @@ class ProductController extends Controller
         $query = Product::query();
 
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+            $query->where('name', 'like', '%'.$request->search.'%');
         }
 
         if (request('alert') == 'true') {
@@ -37,10 +37,9 @@ class ProductController extends Controller
     public function alerts()
     {
         $products = Product::where('stock_quantity', '<', 10)->get();
+
         return view('products.alerts', compact('products'));
     }
-
-    // ... garde la méthode index() existante ...
 
     public function create()
     {

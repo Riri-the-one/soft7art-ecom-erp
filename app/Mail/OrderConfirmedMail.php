@@ -14,9 +14,7 @@ class OrderConfirmedMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(public Order $order)
-    {
-    }
+    public function __construct(public Order $order) {}
 
     /**
      * Get the message envelope.
@@ -24,7 +22,7 @@ class OrderConfirmedMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Confirmation de votre commande n°' . $this->order->id,
+            subject: 'Confirmation de votre commande n°'.$this->order->id,
         );
     }
 
@@ -51,7 +49,7 @@ class OrderConfirmedMail extends Mailable
         return [
             Attachment::fromData(
                 fn () => Pdf::setOption(['isRemoteEnabled' => true])->loadView('orders.invoice', ['order' => $this->order])->output(),
-                'facture_' . $this->order->id . '.pdf'
+                'facture_'.$this->order->id.'.pdf'
             )->withMime('application/pdf'),
         ];
     }

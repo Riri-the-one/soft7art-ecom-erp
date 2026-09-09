@@ -2,8 +2,6 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Gate;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Product;
@@ -11,6 +9,8 @@ use App\Observers\OrderObserver;
 use App\Policies\CustomerPolicy;
 use App\Policies\OrderPolicy;
 use App\Policies\ProductPolicy;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {

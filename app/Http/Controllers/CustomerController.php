@@ -20,7 +20,7 @@ class CustomerController extends Controller
             ->latest();
 
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+            $query->where('name', 'like', '%'.$request->search.'%');
         }
 
         $customers = $query->paginate(15);

@@ -1,11 +1,11 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\StatisticController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StatisticController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -16,10 +16,10 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['au
 
 // Le grand groupe de sécurité : il faut être connecté pour voir tout ça
 Route::middleware('auth')->group(function () {
-    
+
     // --- 1. ROUTES DU CATALOGUE ---
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-    
+
     // Sous-groupe : Seuls le Gestionnaire de stock et le Directeur peuvent ajouter/modifier des produits
     Route::middleware('role:stock_manager,super_admin')->group(function () {
         Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
@@ -31,20 +31,20 @@ Route::middleware('auth')->group(function () {
     // --- 2. ROUTES DES COMMANDES ---
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/kanban', [OrderController::class, 'kanban'])->name('orders.kanban');
-    
+
     Route::middleware('role:agent,super_admin')->group(function () {
         Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
         Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     });
-    
+
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
-    
+
     // Routes for export and invoice - restricted to super_admin and agent only
     Route::middleware('role:super_admin,agent')->group(function () {
         Route::get('/orders/{order}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice');
         Route::get('/orders/export/csv', [OrderController::class, 'exportCsv'])->name('orders.export');
     });
-    
+
     // Le contrôle de rôle pour updateStatus est désormais géré par OrderPolicy::updateStatus()
     Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
 

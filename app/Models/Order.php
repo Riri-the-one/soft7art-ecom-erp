@@ -10,7 +10,7 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
-        'customer_id', 'user_id', 'status', 'delivery_fee', 'total_amount'
+        'customer_id', 'user_id', 'status', 'delivery_fee', 'total_amount',
     ];
 
     // Appartient à un client
@@ -31,7 +31,6 @@ class Order extends Model
         return $this->belongsToMany(Product::class)->withPivot('quantity', 'unit_price');
     }
 
-    
     // Possède un historique des logs d'activité
     public function activityLogs()
     {

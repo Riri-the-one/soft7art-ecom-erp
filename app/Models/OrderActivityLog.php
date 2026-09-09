@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class OrderActivityLog extends Model
 {
     protected $fillable = [
-        'order_id', 'user_id', 'old_status', 'new_status'
+        'order_id', 'user_id', 'old_status', 'new_status',
     ];
 
     // Appartient à une commande

@@ -10,7 +10,7 @@ class Product extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'description', 'photo_path', 'purchase_price', 'selling_price', 'stock_quantity'
+        'name', 'description', 'photo_path', 'purchase_price', 'selling_price', 'stock_quantity',
     ];
 
     // Un produit peut figurer dans plusieurs commandes

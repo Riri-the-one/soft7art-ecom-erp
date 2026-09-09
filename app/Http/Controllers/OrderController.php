@@ -11,6 +11,7 @@ use App\Models\Product;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
@@ -24,13 +25,19 @@ class OrderController extends Controller
         // de réutiliser cette relation déjà en mémoire, sans requête N+1 par ligne.
         $query = Order::with(['customer.orders', 'user'])->latest();
 
-        // Filtre de recherche par ID commande ou nom client
+        // Filtre de recherche par ID commande ou nom client.
+        // Le OR est isolé dans une sous-condition : sans ce groupement, SQL
+        // évalue "id LIKE ? OR (client correspond ET statut = ?)", ce qui
+        // faisait remonter des commandes hors du statut/de la période demandés
+        // dès qu'on combinait la recherche avec un autre filtre.
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where('id', 'like', '%' . $search . '%')
-                  ->orWhereHas('customer', function ($q) use ($search) {
-                      $q->where('name', 'like', '%' . $search . '%');
+            $query->where(function ($q) use ($search) {
+                $q->where('id', 'like', '%' . $search . '%')
+                  ->orWhereHas('customer', function ($sub) use ($search) {
+                      $sub->where('name', 'like', '%' . $search . '%');
                   });
+            });
         }
 
         // Filtre par statut
@@ -109,7 +116,9 @@ class OrderController extends Controller
         return response()->json([
             'duplicate' => true,
             'order_id' => $existing->id,
-            'minutes_ago' => $existing->created_at->diffInMinutes(now()),
+            // (int) : diffInMinutes renvoie un flottant avec Carbon 3, ce qui
+            // afficherait "il y a 12.7 minutes" dans l'avertissement.
+            'minutes_ago' => (int) $existing->created_at->diffInMinutes(now()),
         ]);
     }
 
@@ -154,12 +163,22 @@ class OrderController extends Controller
         $newStatus = $validated['status'];
 
         if ($oldStatus !== $newStatus) {
-            $order->status = $newStatus;
-            $order->save();
+            // Le changement de statut déclenche OrderObserver, qui décrémente ou
+            // restitue le stock des produits. Les deux opérations doivent réussir
+            // ensemble, sinon on se retrouve avec un statut à jour et un stock faux.
+            DB::transaction(function () use ($order, $newStatus) {
+                $order->status = $newStatus;
+                $order->save();
+            });
 
-            // Envoyer un e-mail de confirmation si le statut est 'confirmed'
-            if ($newStatus === 'confirmed') {
-                Mail::to($order->customer->email)->send(new OrderConfirmedMail($order));
+            // L'e-mail est envoyé hors transaction et sans bloquer : une panne du
+            // serveur SMTP ne doit pas annuler un changement de statut déjà validé.
+            if ($newStatus === 'confirmed' && $order->customer && $order->customer->email) {
+                try {
+                    Mail::to($order->customer->email)->send(new OrderConfirmedMail($order));
+                } catch (\Throwable $e) {
+                    Log::warning("Envoi de l'e-mail de confirmation échoué pour la commande {$order->id} : " . $e->getMessage());
+                }
             }
         }
 
@@ -172,6 +191,10 @@ class OrderController extends Controller
 
     public function invoice(Order $order)
     {
+        // Même contrôle que show() : la facture contient les mêmes informations
+        // client, elle ne doit pas être accessible plus largement que la fiche.
+        $this->authorize('view', $order);
+
         $order->load(['products', 'customer']);
 
         $pdf = Pdf::setOption(['isRemoteEnabled' => true])->loadView('orders.invoice', compact('order'));
@@ -184,6 +207,8 @@ class OrderController extends Controller
      */
     public function label(Order $order)
     {
+        $this->authorize('view', $order);
+
         $order->load(['products', 'customer']);
 
         return view('orders.label', compact('order'));
@@ -205,18 +230,20 @@ class OrderController extends Controller
 
     public function exportCsv()
     {
-        $orders = Order::with('customer')->get();
-
         $headers = [
-            'Content-Type' => 'text/csv',
+            'Content-Type' => 'text/csv; charset=UTF-8',
             'Content-Disposition' => 'attachment; filename="export_commandes.csv"',
         ];
 
-        $callback = function () use ($orders) {
+        $callback = function () {
             $handle = fopen('php://output', 'w');
+            // BOM UTF-8 : sans lui, Excel affiche "Ã©" à la place des accents.
+            fwrite($handle, "\xEF\xBB\xBF");
             fputcsv($handle, ['ID Commande', 'Nom Client', 'Montant Total', 'Statut', 'Date']);
 
-            foreach ($orders as $order) {
+            // lazy() parcourt les commandes par lots au lieu de toutes les charger
+            // en mémoire : l'export reste stable quand le volume grandit.
+            foreach (Order::with('customer')->lazy() as $order) {
                 fputcsv($handle, [
                     $order->id,
                     $order->customer->name ?? '',
@@ -239,16 +266,12 @@ class OrderController extends Controller
      */
     public function exportLogisticsCsv()
     {
-        $orders = Order::where('status', 'confirmed')
-            ->with(['customer', 'products'])
-            ->get();
-
         $headers = [
-            'Content-Type' => 'text/csv',
+            'Content-Type' => 'text/csv; charset=UTF-8',
             'Content-Disposition' => 'attachment; filename="export_logistique_' . now()->format('Y-m-d') . '.csv"',
         ];
 
-        $callback = function () use ($orders) {
+        $callback = function () {
             $handle = fopen('php://output', 'w');
             // UTF-8 BOM pour qu'Excel affiche correctement les accents français.
             fwrite($handle, "\xEF\xBB\xBF");
@@ -257,6 +280,10 @@ class OrderController extends Controller
                 'Référence', 'Destinataire', 'Téléphone', 'Ville', 'Adresse',
                 'Désignation', 'Quantité', 'Montant COD (DH)', 'Remarques',
             ]);
+
+            $orders = Order::where('status', 'confirmed')
+                ->with(['customer', 'products'])
+                ->lazy();
 
             foreach ($orders as $order) {
                 $customer = $order->customer;

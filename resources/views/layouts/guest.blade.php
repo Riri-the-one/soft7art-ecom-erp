@@ -5,7 +5,18 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        @php
+            $authTitles = [
+                'login' => 'Connexion',
+                'password.request' => 'Mot de passe oublié',
+                'password.reset' => 'Nouveau mot de passe',
+                'password.confirm' => 'Confirmation',
+                'verification.notice' => 'Vérification de l\'e-mail',
+            ];
+            $pageTitle = $authTitles[Route::currentRouteName()] ?? null;
+        @endphp
+
+        <title>{{ $pageTitle ? $pageTitle . ' — ' . config('app.name', 'ERP') : config('app.name', 'ERP') }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -36,9 +47,13 @@
                 </a>
             </div>
 
-            <div class="relative z-10 w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-[0_20px_60px_-30px_rgba(15,23,42,0.18)] overflow-hidden sm:rounded-[2rem] border border-slate-200 dark:bg-slate-900 dark:border-slate-800">
+            <div class="relative z-10 w-full sm:max-w-md mt-6 px-6 py-8 sm:px-8 bg-white shadow-[0_20px_60px_-30px_rgba(15,23,42,0.18)] overflow-hidden sm:rounded-[2rem] border border-slate-200 dark:bg-slate-900 dark:border-slate-800">
                 {{ $slot }}
             </div>
+
+            <p class="relative z-10 mt-6 mb-8 text-xs text-slate-400 dark:text-slate-500">
+                {{ config('app.name', 'ERP') }} &middot; Espace réservé au personnel
+            </p>
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/lucide@0.462.0/dist/umd/lucide.min.js" defer></script>

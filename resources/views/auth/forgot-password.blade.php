@@ -1,25 +1,42 @@
 <x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-        {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Mot de passe oublié</h1>
+        <p class="mt-2 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
+            Indiquez votre adresse e-mail : nous vous enverrons un lien pour définir un nouveau mot de passe.
+        </p>
     </div>
 
-    <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
     <form method="POST" action="{{ route('password.email') }}">
         @csrf
 
-        <!-- Email Address -->
         <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
+            <label for="email" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Adresse e-mail</label>
+            <div class="relative mt-1.5">
+                <i data-lucide="mail" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"></i>
+                <input
+                    id="email"
+                    type="email"
+                    name="email"
+                    value="{{ old('email') }}"
+                    required
+                    autofocus
+                    placeholder="vous@exemple.com"
+                    class="block w-full rounded-xl border-slate-200 bg-slate-50 py-2.5 pl-10 pr-4 text-slate-900 shadow-sm transition focus:border-indigo-400 focus:bg-white focus:ring-2 focus:ring-indigo-200 dark:border-slate-700 dark:bg-slate-950 dark:text-gray-100 dark:focus:ring-indigo-900/40"
+                >
+            </div>
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Email Password Reset Link') }}
-            </x-primary-button>
-        </div>
+        <button type="submit" class="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 px-6 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-200/50 transition hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:shadow-none dark:focus:ring-offset-slate-900">
+            <i data-lucide="send" class="h-4 w-4"></i>
+            Envoyer le lien de réinitialisation
+        </button>
+
+        <a href="{{ route('login') }}" class="mt-4 flex items-center justify-center gap-1.5 text-sm font-medium text-slate-500 transition hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400">
+            <i data-lucide="arrow-left" class="h-4 w-4"></i>
+            Retour à la connexion
+        </a>
     </form>
 </x-guest-layout>

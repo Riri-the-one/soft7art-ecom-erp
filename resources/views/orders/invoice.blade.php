@@ -30,13 +30,13 @@
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 20px;
-            border-bottom: 3px solid #2563eb;
+            border-bottom: 3px solid #4f46e5;
             padding-bottom: 15px;
         }
 
         .company-info h1 {
             font-size: 28px;
-            color: #2563eb;
+            color: #4f46e5;
             margin-bottom: 5px;
         }
 
@@ -52,7 +52,7 @@
 
         .invoice-title h2 {
             font-size: 24px;
-            color: #2563eb;
+            color: #4f46e5;
             margin-bottom: 10px;
         }
 
@@ -80,7 +80,7 @@
         .section h3 {
             font-size: 11px;
             text-transform: uppercase;
-            color: #2563eb;
+            color: #4f46e5;
             margin-bottom: 8px;
             font-weight: bold;
             letter-spacing: 1px;
@@ -106,8 +106,8 @@
 
         thead {
             background-color: #f3f4f6;
-            border-top: 2px solid #2563eb;
-            border-bottom: 2px solid #2563eb;
+            border-top: 2px solid #4f46e5;
+            border-bottom: 2px solid #4f46e5;
         }
 
         th {
@@ -115,7 +115,7 @@
             text-align: left;
             font-weight: bold;
             font-size: 12px;
-            color: #2563eb;
+            color: #4f46e5;
             text-transform: uppercase;
         }
 
@@ -126,7 +126,7 @@
         }
 
         tbody tr:last-child td {
-            border-bottom: 2px solid #2563eb;
+            border-bottom: 2px solid #4f46e5;
         }
 
         .text-right {
@@ -151,12 +151,12 @@
         }
 
         .summary-row.total {
-            border-top: 2px solid #2563eb;
-            border-bottom: 2px solid #2563eb;
+            border-top: 2px solid #4f46e5;
+            border-bottom: 2px solid #4f46e5;
             font-weight: bold;
             font-size: 16px;
             padding: 15px 0;
-            color: #2563eb;
+            color: #4f46e5;
         }
 
         .summary-label {
@@ -193,10 +193,9 @@
         <!-- Header -->
         <div class="header">
             <div class="company-info">
-                <h1>ECOM-ERP</h1>
-                <p>E-commerce & ERP Management System</p>
-                <p>contact@ecom-erp.fr</p>
-                <p>+33 1 23 45 67 89</p>
+                <h1>{{ config('app.name', 'ERP') }}</h1>
+                <p>Gestion e-commerce et logistique</p>
+                <p>Paiement à la livraison</p>
             </div>
 
             <div class="invoice-title">
@@ -204,8 +203,12 @@
                 <div class="invoice-number">N° {{ str_pad($order->id, 5, '0', STR_PAD_LEFT) }}</div>
                 <div class="invoice-date">{{ now()->format('d/m/Y') }}</div>
                 <br>
+                {{-- Le QR code pointe vers la page de suivi PUBLIQUE : scanné par le
+                     client, il affiche l'état de sa commande sans avoir à se connecter.
+                     Auparavant il renvoyait vers l'écran interne, qui exige un compte. --}}
                 <div style="margin-top: 10px;">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data={{ urlencode(route('orders.show', $order->id)) }}" width="100" height="100">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data={{ urlencode($order->tracking_url) }}" width="100" height="100" alt="Suivi de commande">
+                    <div style="font-size: 9px; color: #666; margin-top: 4px;">Scannez pour suivre</div>
                 </div>
             </div>
         </div>
@@ -221,7 +224,7 @@
                             {{ $order->customer->email ?? '' }}<br>
                             {{ $order->customer->phone ?? '' }}<br>
                             {{ $order->customer->address ?? '' }}<br>
-                            {{ $order->customer->postal_code ?? '' }} {{ $order->customer->city ?? '' }}
+                            {{ $order->customer->city ?? '' }}
                         </p>
                     </div>
                 </td>
@@ -277,9 +280,9 @@
                     <td colspan="3" class="text-right">Taxe (TVA) :</td>
                     <td class="text-right">Incluse</td>
                 </tr>
-                <tr style="border-top: 2px solid #2563eb; border-bottom: 2px solid #2563eb; page-break-inside: avoid;">
-                    <td colspan="3" class="text-right" style="font-weight: bold; font-size: 16px; color: #2563eb; padding: 15px 0;">MONTANT TOTAL TTC :</td>
-                    <td class="text-right" style="font-weight: bold; font-size: 16px; color: #2563eb; padding: 15px 0;">{{ number_format($order->total_amount, 2, ',', ' ') }} DH</td>
+                <tr style="border-top: 2px solid #4f46e5; border-bottom: 2px solid #4f46e5; page-break-inside: avoid;">
+                    <td colspan="3" class="text-right" style="font-weight: bold; font-size: 16px; color: #4f46e5; padding: 15px 0;">MONTANT TOTAL TTC :</td>
+                    <td class="text-right" style="font-weight: bold; font-size: 16px; color: #4f46e5; padding: 15px 0;">{{ number_format($order->total_amount, 2, ',', ' ') }} DH</td>
                 </tr>
             </tfoot>
         </table>

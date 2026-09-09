@@ -13,8 +13,8 @@
     <div class="py-8">
         <div class="max-w-full mx-auto sm:px-6 lg:px-8">
 
-            <div class="grid gap-4 grid-cols-1 md:grid-cols-3 lg:grid-cols-5">
-                @foreach(['pending' => 'En attente', 'confirmed' => 'Confirmées', 'shipped' => 'Expédiées', 'delivered' => 'Livrées', 'canceled' => 'Annulées'] as $status => $label)
+            <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-6">
+                @foreach(['pending' => 'En attente', 'confirmed' => 'Confirmées', 'shipped' => 'Expédiées', 'delivered' => 'Livrées', 'returned' => 'Retournées', 'canceled' => 'Annulées'] as $status => $label)
                     <div class="rounded-2xl border border-slate-200 bg-white shadow-sm p-5 dark:bg-slate-900 dark:border-slate-800">
                         <div class="flex justify-between items-center mb-5">
                             <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">{{ $label }}</h3>

@@ -5,7 +5,29 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        @php
+            // Titre d'onglet propre à chaque page : sans cela, tous les onglets
+            // ouverts affichent le même nom et deviennent indistinguables.
+            $pageTitles = [
+                'dashboard' => 'Tableau de bord',
+                'products.index' => 'Catalogue',
+                'products.create' => 'Nouveau produit',
+                'products.edit' => 'Modifier un produit',
+                'products.alerts' => 'Alertes de stock',
+                'orders.index' => 'Commandes',
+                'orders.create' => 'Nouvelle commande',
+                'orders.show' => 'Détail commande',
+                'orders.kanban' => 'Kanban des commandes',
+                'customers.index' => 'Clients',
+                'customers.create' => 'Nouveau client',
+                'customers.show' => 'Fiche client',
+                'statistics.index' => 'Statistiques',
+                'profile.edit' => 'Mon profil',
+            ];
+            $pageTitle = $pageTitles[Route::currentRouteName()] ?? null;
+        @endphp
+
+        <title>{{ $pageTitle ? $pageTitle . ' — ' . config('app.name', 'ERP') : config('app.name', 'ERP') }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -93,10 +115,19 @@
                             <i data-lucide="menu" class="h-5 w-5"></i>
                         </button>
 
-                        <div class="relative hidden sm:block">
+                        @php
+                            // La barre de recherche de l'en-tête renvoie vers l'écran
+                            // pertinent selon le métier de l'utilisateur : le gestionnaire
+                            // de stock n'a pas accès aux commandes.
+                            $isStockManager = Auth::user()->hasRole('stock_manager');
+                            $topSearchRoute = $isStockManager ? route('products.index') : route('orders.index');
+                            $topSearchPlaceholder = $isStockManager ? 'Rechercher un produit...' : 'Rechercher une commande, un client...';
+                        @endphp
+
+                        <form method="GET" action="{{ $topSearchRoute }}" class="relative hidden sm:block">
                             <i data-lucide="search" class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400"></i>
-                            <input type="text" placeholder="Rechercher..." class="w-56 lg:w-72 rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-4 py-2 text-sm text-slate-700 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-200 dark:bg-slate-800 dark:border-slate-700 dark:text-gray-100">
-                        </div>
+                            <input type="text" name="search" placeholder="{{ $topSearchPlaceholder }}" class="w-56 lg:w-80 rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-4 py-2 text-sm text-slate-700 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-200 dark:bg-slate-800 dark:border-slate-700 dark:text-gray-100">
+                        </form>
                     </div>
 
                     <div class="flex items-center gap-2 sm:gap-3">

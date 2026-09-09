@@ -104,15 +104,17 @@
                             <h4 class="text-lg font-bold text-slate-900 dark:text-gray-100">Top 5 Produits</h4>
                         </div>
                         <div class="space-y-3">
-                            @foreach($topProducts as $index => $product)
-                                <div class="flex items-center justify-between py-2">
-                                    <div class="flex items-center gap-3">
-                                        <span class="w-6 h-6 flex items-center justify-center bg-violet-100 text-violet-600 rounded-full text-xs font-bold dark:bg-violet-500/20 dark:text-violet-300">{{ $index + 1 }}</span>
-                                        <span class="text-slate-900 font-medium dark:text-gray-100">{{ $product->name }}</span>
+                            @forelse($topProducts as $index => $product)
+                                <div class="flex items-center justify-between gap-3 py-2">
+                                    <div class="flex min-w-0 items-center gap-3">
+                                        <span class="w-6 h-6 shrink-0 flex items-center justify-center bg-violet-100 text-violet-600 rounded-full text-xs font-bold dark:bg-violet-500/20 dark:text-violet-300">{{ $index + 1 }}</span>
+                                        <span class="truncate text-slate-900 font-medium dark:text-gray-100">{{ $product->name }}</span>
                                     </div>
-                                    <span class="text-sm text-slate-500 dark:text-slate-400">{{ $product->stock_quantity }} en stock</span>
+                                    <span class="shrink-0 text-sm font-semibold text-violet-600 dark:text-violet-400">{{ $product->units_sold }} vendu{{ $product->units_sold > 1 ? 's' : '' }}</span>
                                 </div>
-                            @endforeach
+                            @empty
+                                <p class="py-6 text-center text-sm text-slate-400 dark:text-slate-500">Aucune vente enregistrée pour le moment.</p>
+                            @endforelse
                         </div>
                     </div>
 

@@ -52,10 +52,50 @@ class DashboardService
         return [
             'monthlyGoal' => min(($monthlyRevenue / 50000) * 100, 100),
             'monthlyRevenue' => $monthlyRevenue,
-            'topProducts' => Product::orderBy('created_at', 'desc')->take(5)->get(),
+            'topProducts' => $this->topProducts(),
             'recentActivity' => Order::with('customer')->orderBy('created_at', 'desc')->take(5)->get(),
             'agentLeaderboard' => $this->agentLeaderboard(),
         ];
+    }
+
+    /**
+     * Les 5 produits les plus vendus, calculés sur les quantités réellement
+     * commandées (table pivot order_product), hors commandes annulées ou
+     * retournées.
+     *
+     * Auparavant ce widget affichait simplement les 5 produits les plus
+     * récemment ajoutés au catalogue, ce qui ne correspondait pas à son
+     * intitulé "Top 5 Produits".
+     */
+    private function topProducts()
+    {
+        $rows = DB::table('order_product')
+            ->join('orders', 'orders.id', '=', 'order_product.order_id')
+            ->whereNotIn('orders.status', ['canceled', 'returned'])
+            ->select('order_product.product_id', DB::raw('SUM(order_product.quantity) as units_sold'))
+            ->groupBy('order_product.product_id')
+            ->orderByDesc('units_sold')
+            ->limit(5)
+            ->get();
+
+        if ($rows->isEmpty()) {
+            return collect();
+        }
+
+        // Une seule requête supplémentaire pour récupérer les produits concernés.
+        $products = Product::whereIn('id', $rows->pluck('product_id'))->get()->keyBy('id');
+
+        return $rows->map(function ($row) use ($products) {
+            $product = $products->get($row->product_id);
+
+            if (! $product) {
+                return null;
+            }
+
+            $product->units_sold = (int) $row->units_sold;
+
+            return $product;
+        })->filter()->values();
     }
 
     /**

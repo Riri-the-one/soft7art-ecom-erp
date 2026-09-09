@@ -17,7 +17,7 @@ class ProductController extends Controller
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        if (request('alert') == 'true') {
+        if ($request->query('alert') === 'true') {
             $query->where('stock_quantity', '<', 10);
         }
 

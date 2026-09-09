@@ -8,9 +8,9 @@
     <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-2xl border border-slate-200 dark:bg-slate-900 dark:border-slate-800">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
+                <div class="p-6 text-slate-900 dark:text-gray-100">
                     <div class="mb-6">
-                        <a href="{{ route('orders.index') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 dark:bg-slate-950 dark:border-slate-700 dark:text-gray-200 dark:hover:bg-slate-800">
+                        <a href="{{ route('orders.index') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 dark:bg-slate-950 dark:border-slate-700 dark:text-gray-200 dark:hover:bg-slate-800">
                             ← Retour à la liste
                         </a>
                     </div>
@@ -21,12 +21,12 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Sélection du client -->
                             <div>
-                                <label for="customer_id" class="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">Client</label>
+                                <label for="customer_id" class="block text-sm font-medium text-slate-700 mb-2 dark:text-gray-300">Client</label>
                                 <select
                                     id="customer_id"
                                     name="customer_id"
                                     required
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100"
+                                    class="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100"
                                 >
                                     <option value="">Sélectionner un client</option>
                                     @foreach($customers as $customer)
@@ -37,12 +37,12 @@
 
                             <!-- Sélection du produit -->
                             <div>
-                                <label for="product_id" class="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">Produit</label>
+                                <label for="product_id" class="block text-sm font-medium text-slate-700 mb-2 dark:text-gray-300">Produit</label>
                                 <select
                                     id="product_id"
                                     name="product_id"
                                     required
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100"
+                                    class="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100"
                                 >
                                     <option value="">Sélectionner un produit</option>
                                     @foreach($products as $product)
@@ -55,7 +55,7 @@
 
                             <!-- Quantité -->
                             <div>
-                                <label for="quantity" class="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">Quantité</label>
+                                <label for="quantity" class="block text-sm font-medium text-slate-700 mb-2 dark:text-gray-300">Quantité</label>
                                 <input
                                     type="number"
                                     id="quantity"
@@ -63,13 +63,13 @@
                                     min="1"
                                     value="1"
                                     required
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100"
+                                    class="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100"
                                 >
                             </div>
 
                             <!-- Frais de livraison -->
                             <div>
-                                <label for="delivery_fee" class="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">Frais de livraison (DH)</label>
+                                <label for="delivery_fee" class="block text-sm font-medium text-slate-700 mb-2 dark:text-gray-300">Frais de livraison (DH)</label>
                                 <input
                                     type="number"
                                     id="delivery_fee"
@@ -78,7 +78,7 @@
                                     step="0.01"
                                     value="0"
                                     required
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100"
+                                    class="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100"
                                 >
                             </div>
                         </div>
@@ -91,11 +91,11 @@
 
                         <!-- Récapitulatif -->
                         <div class="bg-slate-50 rounded-xl p-4 dark:bg-slate-950">
-                            <h4 class="text-sm font-semibold text-gray-700 mb-2 dark:text-gray-300">Récapitulatif</h4>
-                            <div class="space-y-1 text-sm text-gray-600 dark:text-gray-400">
+                            <h4 class="text-sm font-semibold text-slate-700 mb-2 dark:text-gray-300">Récapitulatif</h4>
+                            <div class="space-y-1 text-sm text-slate-600 dark:text-gray-400">
                                 <p>Sous-total : <span id="subtotal" class="font-medium">0.00</span> DH</p>
                                 <p>Frais de livraison : <span id="delivery_fee_display" class="font-medium">0.00</span> DH</p>
-                                <p class="text-base font-semibold text-gray-900 dark:text-gray-100">Total : <span id="total" class="font-bold">0.00</span> DH</p>
+                                <p class="text-base font-semibold text-slate-900 dark:text-gray-100">Total : <span id="total" class="font-bold">0.00</span> DH</p>
                             </div>
                         </div>
 

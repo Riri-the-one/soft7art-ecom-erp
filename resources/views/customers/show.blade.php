@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             <div class="mb-6">
-                <a href="{{ route('customers.index') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 dark:bg-slate-900 dark:border-slate-700 dark:text-gray-200 dark:hover:bg-slate-800">
+                <a href="{{ route('customers.index') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 dark:bg-slate-900 dark:border-slate-700 dark:text-gray-200 dark:hover:bg-slate-800">
                     ← Retour à l'annuaire
                 </a>
             </div>
@@ -18,29 +18,29 @@
 
                 {{-- Colonne gauche : Profil du client --}}
                 <div class="lg:col-span-1">
-                    <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 dark:bg-slate-900 dark:border-slate-800">
+                    <div class="bg-white rounded-2xl shadow-sm p-6 border border-slate-100 dark:bg-slate-900 dark:border-slate-800">
                         <div class="flex items-center gap-4 mb-6">
                             <div class="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center dark:bg-indigo-500/10">
                                 <i data-lucide="user" class="w-8 h-8 text-indigo-600 dark:text-indigo-400"></i>
                             </div>
                             <div>
-                                <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">{{ $customer->name }}</h3>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Client depuis le {{ $customer->created_at->format('d/m/Y') }}</p>
+                                <h3 class="text-xl font-bold text-slate-900 dark:text-gray-100">{{ $customer->name }}</h3>
+                                <p class="text-sm text-slate-500 dark:text-gray-400">Client depuis le {{ $customer->created_at->format('d/m/Y') }}</p>
                             </div>
                         </div>
 
                         <div class="space-y-4">
                             <div>
-                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Email</p>
+                                <p class="text-sm font-medium text-slate-500 dark:text-gray-400">Email</p>
                                 @if($customer->email)
-                                    <p class="text-gray-900 dark:text-gray-100">{{ $customer->email }}</p>
+                                    <p class="text-slate-900 dark:text-gray-100">{{ $customer->email }}</p>
                                 @else
-                                    <p class="text-gray-400 italic dark:text-slate-400">Non renseigné</p>
+                                    <p class="text-slate-400 italic dark:text-slate-400">Non renseigné</p>
                                 @endif
                             </div>
                             <div>
-                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Téléphone</p>
-                                <p class="text-gray-900 dark:text-gray-100">{{ $customer->phone ?? 'Non renseigné' }}</p>
+                                <p class="text-sm font-medium text-slate-500 dark:text-gray-400">Téléphone</p>
+                                <p class="text-slate-900 dark:text-gray-100">{{ $customer->phone ?? 'Non renseigné' }}</p>
                                 @if($customer->whatsapp_number)
                                     <a href="https://wa.me/{{ $customer->whatsapp_number }}?text={{ urlencode('Bonjour ' . $customer->name . ', je vous contacte au sujet de votre compte client.') }}" target="_blank" rel="noopener" class="mt-2 inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium rounded-lg transition-colors">
                                         <i data-lucide="message-circle" class="h-4 w-4"></i> Contacter sur WhatsApp
@@ -48,20 +48,20 @@
                                 @endif
                             </div>
                             <div>
-                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Adresse</p>
-                                <p class="text-gray-900 dark:text-gray-100">{{ $customer->address ?? 'Non renseignée' }}</p>
+                                <p class="text-sm font-medium text-slate-500 dark:text-gray-400">Adresse</p>
+                                <p class="text-slate-900 dark:text-gray-100">{{ $customer->address ?? 'Non renseignée' }}</p>
                             </div>
                             <div>
-                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total des commandes</p>
+                                <p class="text-sm font-medium text-slate-500 dark:text-gray-400">Total des commandes</p>
                                 <p class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{{ $customer->orders_count ?? $customer->orders->count() }}</p>
                             </div>
                             <div>
-                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total dépensé</p>
+                                <p class="text-sm font-medium text-slate-500 dark:text-gray-400">Total dépensé</p>
                                 <p class="text-2xl font-bold text-teal-600 dark:text-teal-400">{{ number_format($customer->orders->sum('total_amount'), 2) }} DH</p>
                             </div>
                             @if($customer->orders->count() > 0)
                                 <div>
-                                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Taux de livraison</p>
+                                    <p class="text-sm font-medium text-slate-500 dark:text-gray-400">Taux de livraison</p>
                                     @if($customer->delivery_rate < 50)
                                         <p class="text-2xl font-bold text-red-600 dark:text-red-400">{{ $customer->delivery_rate }}%</p>
                                         <span class="mt-1 inline-flex items-center px-2 py-0.5 bg-red-50 text-red-600 rounded-full text-xs font-medium dark:bg-red-900/25 dark:text-red-200">Risque élevé</span>
@@ -79,26 +79,26 @@
 
                 {{-- Colonne droite : Historique des commandes --}}
                 <div class="lg:col-span-2">
-                    <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 dark:bg-slate-900 dark:border-slate-800">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-6 dark:text-gray-100">Historique des commandes</h3>
+                    <div class="bg-white rounded-2xl shadow-sm p-6 border border-slate-100 dark:bg-slate-900 dark:border-slate-800">
+                        <h3 class="text-lg font-semibold text-slate-900 mb-6 dark:text-gray-100">Historique des commandes</h3>
 
                         @if($customer->orders->count() > 0)
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left border-collapse">
                                     <thead>
-                                        <tr class="bg-gray-100 border-b-2 border-gray-200 dark:bg-slate-800 dark:border-slate-700">
-                                            <th class="p-3 font-bold text-gray-600 dark:text-slate-300">N° Commande</th>
-                                            <th class="p-3 font-bold text-gray-600 dark:text-slate-300">Date</th>
-                                            <th class="p-3 font-bold text-gray-600 dark:text-slate-300">Montant</th>
-                                            <th class="p-3 font-bold text-gray-600 dark:text-slate-300">Statut</th>
-                                            <th class="p-3 font-bold text-gray-600 dark:text-slate-300 text-center">Actions</th>
+                                        <tr class="bg-slate-100 border-b-2 border-slate-200 dark:bg-slate-800 dark:border-slate-700">
+                                            <th class="p-3 font-bold text-slate-600 dark:text-slate-300">N° Commande</th>
+                                            <th class="p-3 font-bold text-slate-600 dark:text-slate-300">Date</th>
+                                            <th class="p-3 font-bold text-slate-600 dark:text-slate-300">Montant</th>
+                                            <th class="p-3 font-bold text-slate-600 dark:text-slate-300">Statut</th>
+                                            <th class="p-3 font-bold text-slate-600 dark:text-slate-300 text-center">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach($customer->orders as $order)
-                                            <tr class="border-b hover:bg-gray-50 dark:border-slate-800 dark:hover:bg-slate-800">
-                                                <td class="p-3 font-semibold text-gray-900 dark:text-gray-100">#{{ $order->id }}</td>
-                                                <td class="p-3 text-sm text-gray-600 dark:text-slate-400">{{ $order->created_at->format('d/m/Y H:i') }}</td>
+                                            <tr class="border-b hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800">
+                                                <td class="p-3 font-semibold text-slate-900 dark:text-gray-100">#{{ $order->id }}</td>
+                                                <td class="p-3 text-sm text-slate-600 dark:text-slate-400">{{ $order->created_at->format('d/m/Y H:i') }}</td>
                                                 <td class="p-3 font-bold text-indigo-600 dark:text-indigo-400">{{ number_format($order->total_amount, 2) }} DH</td>
                                                 <td class="p-3">
                                                     @switch($order->status)
@@ -130,7 +130,7 @@
                                 </table>
                             </div>
                         @else
-                            <div class="text-center py-8 text-gray-500 dark:text-gray-400">
+                            <div class="text-center py-8 text-slate-500 dark:text-gray-400">
                                 <p>Aucune commande pour ce client.</p>
                             </div>
                         @endif

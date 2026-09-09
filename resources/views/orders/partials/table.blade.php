@@ -41,9 +41,14 @@
                             @case('delivered')
                                 <span class="px-2 py-1 bg-teal-50 text-teal-700 rounded-full text-xs font-medium dark:bg-teal-900/30 dark:text-teal-200">Livrée</span>
                                 @break
+                            @case('returned')
+                                <span class="px-2 py-1 bg-rose-50 text-rose-700 rounded-full text-xs font-medium dark:bg-rose-900/30 dark:text-rose-200">Retournée</span>
+                                @break
                             @case('canceled')
                                 <span class="px-2 py-1 bg-fuchsia-50 text-fuchsia-700 rounded-full text-xs font-medium dark:bg-fuchsia-900/30 dark:text-fuchsia-200">Annulée</span>
                                 @break
+                            @default
+                                <span class="px-2 py-1 bg-slate-100 text-slate-600 rounded-full text-xs font-medium dark:bg-slate-800 dark:text-slate-300">{{ $order->status }}</span>
                         @endswitch
                     </td>
                     <td class="p-3 text-center">

@@ -38,6 +38,7 @@
                                     <option value="confirmed" {{ request('status') === 'confirmed' ? 'selected' : '' }}>Confirmée</option>
                                     <option value="shipped" {{ request('status') === 'shipped' ? 'selected' : '' }}>Expédiée</option>
                                     <option value="delivered" {{ request('status') === 'delivered' ? 'selected' : '' }}>Livrée</option>
+                                    <option value="returned" {{ request('status') === 'returned' ? 'selected' : '' }}>Retournée</option>
                                     <option value="canceled" {{ request('status') === 'canceled' ? 'selected' : '' }}>Annulée</option>
                                 </select>
                             </div>

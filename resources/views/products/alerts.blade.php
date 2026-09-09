@@ -8,8 +8,8 @@
     <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-2xl border border-slate-200 dark:bg-slate-900 dark:border-slate-800">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-6 dark:text-gray-100 flex items-center gap-2">
+                <div class="p-6 text-slate-900 dark:text-gray-100">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-6 dark:text-gray-100 flex items-center gap-2">
                         <i data-lucide="triangle-alert" class="h-5 w-5 text-rose-500"></i>
                         Produits en alerte de stock critique
                     </h3>

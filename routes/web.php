@@ -14,6 +14,10 @@ Route::get('/', function () {
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
+// Page de suivi publique (non-authentifiée) : le lien complet contient un token
+// unique et imprévisible qui fait office d'autorisation, donc pas besoin de login.
+Route::get('/suivi/{order}/{token}', [OrderController::class, 'track'])->name('orders.track');
+
 // Le grand groupe de sécurité : il faut être connecté pour voir tout ça
 Route::middleware('auth')->group(function () {
 
@@ -26,6 +30,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/products', [ProductController::class, 'store'])->name('products.store');
         Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
         Route::patch('/products/{product}', [ProductController::class, 'update'])->name('products.update');
+        Route::get('/products/{product}/barcode', [ProductController::class, 'barcode'])->name('products.barcode');
     });
 
     // --- 2. ROUTES DES COMMANDES ---
@@ -35,6 +40,8 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:agent,super_admin')->group(function () {
         Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
         Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+        // Vérification AJAX de doublon avant l'enregistrement d'une commande.
+        Route::post('/orders/check-duplicate', [OrderController::class, 'checkDuplicate'])->name('orders.checkDuplicate');
     });
 
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
@@ -42,7 +49,9 @@ Route::middleware('auth')->group(function () {
     // Routes for export and invoice - restricted to super_admin and agent only
     Route::middleware('role:super_admin,agent')->group(function () {
         Route::get('/orders/{order}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice');
+        Route::get('/orders/{order}/label', [OrderController::class, 'label'])->name('orders.label');
         Route::get('/orders/export/csv', [OrderController::class, 'exportCsv'])->name('orders.export');
+        Route::get('/orders/export/logistics', [OrderController::class, 'exportLogisticsCsv'])->name('orders.export.logistics');
     });
 
     // Le contrôle de rôle pour updateStatus est désormais géré par OrderPolicy::updateStatus()

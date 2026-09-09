@@ -10,7 +10,7 @@ class Product extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'description', 'photo_path', 'purchase_price', 'selling_price', 'stock_quantity',
+        'name', 'description', 'photo_path', 'purchase_price', 'selling_price', 'stock_quantity', 'shelf_location',
     ];
 
     // Un produit peut figurer dans plusieurs commandes
@@ -18,6 +18,15 @@ class Product extends Model
     {
         // On précise withPivot pour que Laravel récupère aussi la quantité et le prix unitaire
         return $this->belongsToMany(Order::class)->withPivot('quantity', 'unit_price');
+    }
+
+    /**
+     * Code utilisé pour générer le code-barres du produit (imprimable sur
+     * l'étiquette de rayon). Basé sur l'ID pour garantir l'unicité.
+     */
+    public function getBarcodeValueAttribute(): string
+    {
+        return 'PRD' . str_pad((string) $this->id, 8, '0', STR_PAD_LEFT);
     }
 
     // Vérifie si le stock est critique (moins de 5 unités selon ton cahier des charges)

@@ -12,9 +12,14 @@
                     ← Retour à la liste
                 </a>
                 @if(in_array(auth()->user()->role, ['super_admin', 'agent']))
-                    <a href="{{ route('orders.invoice', $order) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-teal-500 border border-teal-500 rounded-lg text-sm font-medium text-white hover:bg-teal-600">
-                        <i data-lucide="download" class="h-4 w-4"></i> Télécharger la Facture
-                    </a>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <a href="{{ route('orders.label', $order) }}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 dark:bg-slate-900 dark:border-slate-700 dark:text-gray-200 dark:hover:bg-slate-800">
+                            <i data-lucide="printer" class="h-4 w-4"></i> Bon de livraison
+                        </a>
+                        <a href="{{ route('orders.invoice', $order) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-teal-500 border border-teal-500 rounded-lg text-sm font-medium text-white hover:bg-teal-600">
+                            <i data-lucide="download" class="h-4 w-4"></i> Télécharger la Facture
+                        </a>
+                    </div>
                 @endif
             </div>
 
@@ -35,11 +40,16 @@
                         </p>
                         <p class="mt-1 text-sm text-gray-600 dark:text-slate-400">Agent responsable : <span class="font-medium text-gray-900 dark:text-gray-100">{{ $order->user->name }}</span></p>
 
-                        @if($order->customer->whatsapp_number)
-                            <a href="https://wa.me/{{ $order->customer->whatsapp_number }}?text={{ urlencode('Bonjour ' . $order->customer->name . ', je vous contacte au sujet de votre commande #' . $order->id . '.') }}" target="_blank" rel="noopener" class="mt-3 inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium rounded-lg transition-colors">
-                                <i data-lucide="message-circle" class="h-4 w-4"></i> Contacter sur WhatsApp
-                            </a>
-                        @endif
+                        <div class="mt-3 flex flex-wrap items-center gap-2">
+                            @if($order->customer->whatsapp_number)
+                                <a href="https://wa.me/{{ $order->customer->whatsapp_number }}?text={{ urlencode('Bonjour ' . $order->customer->name . ', je vous contacte au sujet de votre commande #' . $order->id . '. Vous pouvez suivre son statut ici : ' . $order->tracking_url) }}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium rounded-lg transition-colors">
+                                    <i data-lucide="message-circle" class="h-4 w-4"></i> Contacter sur WhatsApp
+                                </a>
+                            @endif
+                            <button type="button" onclick="navigator.clipboard.writeText('{{ $order->tracking_url }}'); this.dataset.label = this.innerHTML; this.innerHTML = '<span>Lien copié !</span>'; setTimeout(() => this.innerHTML = this.dataset.label, 2000);" class="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-medium rounded-lg transition-colors dark:bg-slate-950 dark:border-slate-700 dark:text-gray-200 dark:hover:bg-slate-800">
+                                <i data-lucide="link" class="h-4 w-4"></i> Copier le lien de suivi
+                            </button>
+                        </div>
                     </div>
 
                     <div class="p-6">

@@ -140,6 +140,42 @@
                         </div>
                     </div>
                 </div>
+
+                {{-- Agent Leaderboard Widget --}}
+                <div class="bg-white rounded-2xl shadow-sm p-6 border border-slate-200 mb-8 dark:bg-slate-900 dark:border-slate-800">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400">
+                            <i data-lucide="trophy" class="h-4 w-4"></i>
+                        </span>
+                        <h4 class="text-lg font-bold text-slate-900 dark:text-gray-100">Classement des Agents</h4>
+                        <span class="text-xs text-slate-400 dark:text-slate-500">(commandes confirmées + livrées)</span>
+                    </div>
+                    @if(($agentLeaderboard ?? collect())->isEmpty())
+                        <p class="text-sm text-slate-500 dark:text-slate-400">Aucun agent avec des commandes pour le moment.</p>
+                    @else
+                        <div class="space-y-2">
+                            @foreach($agentLeaderboard as $agent)
+                                @php
+                                    $medalBg = match($loop->index) {
+                                        0 => 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300',
+                                        1 => 'bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-200',
+                                        2 => 'bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-300',
+                                        default => 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400',
+                                    };
+                                @endphp
+                                <div class="flex items-center justify-between rounded-xl p-3 {{ $loop->first ? 'bg-gradient-to-r from-indigo-50 to-violet-50 dark:from-indigo-500/10 dark:to-violet-500/10' : 'hover:bg-slate-50 dark:hover:bg-slate-800' }} transition">
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-8 h-8 flex items-center justify-center rounded-full text-sm font-bold {{ $medalBg }}">
+                                            {{ $loop->index + 1 }}
+                                        </span>
+                                        <span class="text-slate-900 font-medium dark:text-gray-100">{{ $agent->name }}</span>
+                                    </div>
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-indigo-50 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-300">{{ $agent->score }} commande{{ $agent->score > 1 ? 's' : '' }}</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
             @endif
 
             {{-- Agent Specific Widgets --}}

@@ -54,7 +54,23 @@ class DashboardService
             'monthlyRevenue' => $monthlyRevenue,
             'topProducts' => Product::orderBy('created_at', 'desc')->take(5)->get(),
             'recentActivity' => Order::with('customer')->orderBy('created_at', 'desc')->take(5)->get(),
+            'agentLeaderboard' => $this->agentLeaderboard(),
         ];
+    }
+
+    /**
+     * Classement des agents (Call Center) par nombre de commandes confirmées
+     * ou livrées, pour le widget "Classement des agents" du dashboard.
+     */
+    private function agentLeaderboard()
+    {
+        return User::where('role', 'agent')
+            ->withCount(['orders as score' => function ($query) {
+                $query->whereIn('status', ['confirmed', 'delivered']);
+            }])
+            ->orderByDesc('score')
+            ->take(5)
+            ->get();
     }
 
     /**

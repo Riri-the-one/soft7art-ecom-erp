@@ -79,6 +79,40 @@ class OrderController extends Controller
         return view('orders.create', compact('customers', 'products'));
     }
 
+    /**
+     * Vérification AJAX (appelée depuis le formulaire de création) : le même
+     * client a-t-il déjà passé une commande pour ce même produit dans
+     * l'heure qui précède ? Sert uniquement d'avertissement pour l'agent,
+     * qui reste libre de confirmer la saisie malgré tout.
+     */
+    public function checkDuplicate(Request $request)
+    {
+        $validated = $request->validate([
+            'customer_id' => ['required', 'integer', 'exists:customers,id'],
+            'product_id' => ['required', 'integer', 'exists:products,id'],
+        ]);
+
+        $existing = Order::where('customer_id', $validated['customer_id'])
+            ->where('created_at', '>=', now()->subHour())
+            ->whereNotIn('status', ['canceled', 'returned'])
+            ->whereHas('products', function ($query) use ($validated) {
+                $query->where('products.id', $validated['product_id']);
+            })
+            ->with('products')
+            ->latest()
+            ->first();
+
+        if (! $existing) {
+            return response()->json(['duplicate' => false]);
+        }
+
+        return response()->json([
+            'duplicate' => true,
+            'order_id' => $existing->id,
+            'minutes_ago' => $existing->created_at->diffInMinutes(now()),
+        ]);
+    }
+
     public function store(StoreOrderRequest $request)
     {
         $validated = $request->validated();
@@ -139,9 +173,34 @@ class OrderController extends Controller
     public function invoice(Order $order)
     {
         $order->load(['products', 'customer']);
-        
+
         $pdf = Pdf::setOption(['isRemoteEnabled' => true])->loadView('orders.invoice', compact('order'));
         return $pdf->download('facture_commande_' . $order->id . '.pdf');
+    }
+
+    /**
+     * Bon de livraison / étiquette compacte (format ~10x15 cm), pensée pour être
+     * imprimée directement depuis le navigateur sur une imprimante thermique.
+     */
+    public function label(Order $order)
+    {
+        $order->load(['products', 'customer']);
+
+        return view('orders.label', compact('order'));
+    }
+
+    /**
+     * Page de suivi PUBLIQUE (pas d'authentification) : le token dans l'URL
+     * fait office d'autorisation. Un token invalide ou absent renvoie un 404,
+     * sans révéler d'information sur la commande.
+     */
+    public function track(Order $order, string $token)
+    {
+        if (empty($order->tracking_token) || ! hash_equals($order->tracking_token, $token)) {
+            abort(404);
+        }
+
+        return view('orders.track', compact('order'));
     }
 
     public function exportCsv()
@@ -164,6 +223,57 @@ class OrderController extends Controller
                     number_format($order->total_amount, 2, '.', ''),
                     $order->status,
                     $order->created_at->format('Y-m-d H:i:s'),
+                ]);
+            }
+
+            fclose($handle);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Export "logistique" : uniquement les commandes confirmées (prêtes à être
+     * remises au transporteur), au format colonnes attendu par les portails
+     * des transporteurs marocains (Cathedis, EcoTrack, Ozone Express...).
+     */
+    public function exportLogisticsCsv()
+    {
+        $orders = Order::where('status', 'confirmed')
+            ->with(['customer', 'products'])
+            ->get();
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="export_logistique_' . now()->format('Y-m-d') . '.csv"',
+        ];
+
+        $callback = function () use ($orders) {
+            $handle = fopen('php://output', 'w');
+            // UTF-8 BOM pour qu'Excel affiche correctement les accents français.
+            fwrite($handle, "\xEF\xBB\xBF");
+
+            fputcsv($handle, [
+                'Référence', 'Destinataire', 'Téléphone', 'Ville', 'Adresse',
+                'Désignation', 'Quantité', 'Montant COD (DH)', 'Remarques',
+            ]);
+
+            foreach ($orders as $order) {
+                $customer = $order->customer;
+                $designation = $order->products->map(function ($product) {
+                    return $product->name . ' x' . $product->pivot->quantity;
+                })->implode(' + ');
+
+                fputcsv($handle, [
+                    'CMD-' . $order->id,
+                    $customer->name ?? '',
+                    $customer->phone ?? '',
+                    $customer->city ?? '',
+                    $customer->address ?? '',
+                    $designation,
+                    $order->products->sum('pivot.quantity'),
+                    number_format($order->total_amount, 2, '.', ''),
+                    '',
                 ]);
             }
 

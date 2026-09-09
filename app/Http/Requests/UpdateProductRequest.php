@@ -19,6 +19,7 @@ class UpdateProductRequest extends FormRequest
             'purchase_price' => 'required|numeric|min:0',
             'selling_price' => 'required|numeric|min:0',
             'stock_quantity' => 'required|integer|min:0',
+            'shelf_location' => 'nullable|string|max:50',
         ];
     }
 }

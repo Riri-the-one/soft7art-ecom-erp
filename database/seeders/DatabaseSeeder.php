@@ -13,26 +13,31 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        if (! app()->environment(['local', 'testing']) || ! config('app.demo_seeding')) {
+            throw new \RuntimeException('Demo seeding requires local/testing and DEMO_SEEDING=true on an isolated database.');
+        }
+        $password = bin2hex(random_bytes(12));
+        $this->command?->warn('Isolated demo password (all three accounts): '.$password);
         // 1. Création des 3 comptes employés avec les bons rôles et mots de passe sécurisés
         User::factory()->create([
             'name' => 'Directeur Super Admin',
-            'email' => 'admin@erp.com',
+            'email' => 'admin@example.test',
             'role' => 'super_admin',
-            'password' => Hash::make('password'),
+            'password' => Hash::make($password),
         ]);
 
         $agent = User::factory()->create([
             'name' => 'Agent Commercial',
-            'email' => 'agent@erp.com',
+            'email' => 'agent@example.test',
             'role' => 'agent',
-            'password' => Hash::make('password'),
+            'password' => Hash::make($password),
         ]);
 
         User::factory()->create([
             'name' => 'Gestionnaire Stock',
-            'email' => 'stock@erp.com',
+            'email' => 'stock@example.test',
             'role' => 'stock_manager',
-            'password' => Hash::make('password'),
+            'password' => Hash::make($password),
         ]);
 
         // 2. Génération de 20 faux clients et 50 faux produits
@@ -62,6 +67,7 @@ class DatabaseSeeder extends Seeder
                 $order->products()->attach($product->id, [
                     'quantity' => $quantity,
                     'unit_price' => $product->selling_price,
+                    'unit_cost' => $product->purchase_price,
                 ]);
 
                 $totalAmount += $quantity * $product->selling_price;

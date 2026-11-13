@@ -52,13 +52,13 @@
 
                 <div class="bg-white dark:bg-slate-900 dark:border-slate-800 rounded-2xl border border-slate-100 p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
                     <div class="flex items-center justify-between mb-2">
-                        <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider dark:text-gray-100">Bénéfice Net</p>
+                        <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider dark:text-gray-100">Marge produits</p>
                         <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-teal-50 text-teal-600 dark:bg-teal-500/10 dark:text-teal-400">
                             <i data-lucide="trending-up" class="h-4 w-4"></i>
                         </span>
                     </div>
-                    <p class="text-3xl font-extrabold text-slate-900 tracking-tight dark:text-gray-100">{{ number_format($netProfit, 2) }} DH</p>
-                    <p class="mt-3 text-sm text-slate-500 dark:text-slate-300">Prix de vente - Prix d'achat - Frais de livraison</p>
+                    <p class="text-3xl font-extrabold text-slate-900 tracking-tight dark:text-gray-100">{{ number_format($productMargin, 2) }} DH</p>
+                    <p class="mt-3 text-sm text-slate-500 dark:text-slate-300">Ventes produits - Coût d'achat (hors livraison)</p>
                 </div>
             </div>
 
@@ -93,7 +93,7 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
     <script>
         const ctx = document.getElementById('ordersChart').getContext('2d');
 

@@ -111,7 +111,7 @@
                 <!-- Topbar -->
                 <header class="flex items-center justify-between gap-4 border-b border-slate-200 bg-white px-4 py-3 dark:border-slate-800 dark:bg-slate-900 sm:px-6">
                     <div class="flex items-center gap-3">
-                        <button @click="sidebarOpen = true" class="inline-flex items-center justify-center rounded-lg border border-slate-200 p-2 text-slate-500 hover:bg-slate-100 md:hidden dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
+                        <button aria-label="Ouvrir le menu" @click="sidebarOpen = true" class="inline-flex items-center justify-center rounded-lg border border-slate-200 p-2 text-slate-500 hover:bg-slate-100 md:hidden dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
                             <i data-lucide="menu" class="h-5 w-5"></i>
                         </button>
 
@@ -131,7 +131,7 @@
                     </div>
 
                     <div class="flex items-center gap-2 sm:gap-3">
-                        <button id="theme-toggle" type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-200 p-2 text-slate-500 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
+                        <button id="theme-toggle" aria-label="Changer le thème" type="button" class="inline-flex items-center justify-center rounded-lg border border-slate-200 p-2 text-slate-500 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
                             <i id="theme-toggle-dark-icon" data-lucide="moon" class="hidden h-5 w-5"></i>
                             <i id="theme-toggle-light-icon" data-lucide="sun" class="hidden h-5 w-5"></i>
                         </button>
@@ -221,6 +221,15 @@
                 @endisset
 
                 <main class="flex-1 overflow-y-auto">
+                    @if($errors->any())
+                        <div role="alert" class="m-4 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800 dark:bg-rose-950 dark:text-rose-200">
+                            <ul class="list-disc pl-5">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     {{ $slot }}
                 </main>
             </div>

@@ -1,0 +1,132 @@
+{
+  "results": [
+    {
+      "route": "dashboard",
+      "status": 200
+    },
+    {
+      "route": "products",
+      "status": 200
+    },
+    {
+      "route": "orders",
+      "status": 200
+    },
+    {
+      "route": "customers",
+      "status": 200
+    },
+    {
+      "route": "statistics",
+      "status": 200
+    },
+    {
+      "route": "orders/kanban",
+      "status": 200
+    },
+    {
+      "route": "dashboard",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "route": "products",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "route": "orders",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "route": "customers",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "route": "statistics",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "route": "dashboard",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "route": "products",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "route": "orders",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "route": "customers",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "route": "statistics",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "route": "dashboard",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "route": "products",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "route": "orders",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "route": "customers",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "route": "statistics",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "route": "dashboard",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "route": "products",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "route": "orders",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "route": "customers",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "route": "statistics",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "searchRows": 1
+    }
+  ],
+  "errors": []
+}

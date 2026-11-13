@@ -27,7 +27,7 @@
         <!-- Navigation Links -->
         <div class="flex flex-col gap-1 px-3">
             @php
-                $lowStockCount = \App\Models\Product::where('stock_quantity', '<=', 5)->count();
+                $lowStockCount = \App\Models\Product::where('stock_quantity', '<', 5)->count();
             @endphp
 
             <a href="{{ route('dashboard') }}"
@@ -52,6 +52,7 @@
                 @endif
             </div>
 
+            @can('viewAny', \App\Models\Order::class)
             <a href="{{ route('orders.index') }}"
                class="group flex items-center gap-3 rounded-xl border-l-2 px-3 py-2.5 text-sm font-medium transition-colors {{ (request()->routeIs('orders.index') || request()->routeIs('orders.show')) ? 'border-indigo-500 bg-indigo-50 text-indigo-700 dark:border-indigo-400 dark:bg-indigo-500/15 dark:text-white' : 'border-transparent text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white' }}"
                :class="sidebarCollapsed ? 'justify-center px-0' : ''">
@@ -59,6 +60,7 @@
                 <span x-show="!sidebarCollapsed" x-transition class="truncate">{{ __('Commandes') }}</span>
             </a>
 
+            @endcan
             @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('agent'))
                 <a href="{{ route('customers.index') }}"
                    class="group flex items-center gap-3 rounded-xl border-l-2 px-3 py-2.5 text-sm font-medium transition-colors {{ request()->routeIs('customers.*') ? 'border-indigo-500 bg-indigo-50 text-indigo-700 dark:border-indigo-400 dark:bg-indigo-500/15 dark:text-white' : 'border-transparent text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white' }}"

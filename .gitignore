@@ -22,3 +22,8 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+/.audit/
+.env.*
+!.env.example
+/database/*.sqlite*

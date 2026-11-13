@@ -10,7 +10,7 @@ class Customer extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'email', 'phone', 'city', 'address', 'is_blacklisted'
+        'name', 'email', 'phone', 'city', 'address', 'is_blacklisted',
     ];
 
     // Un client peut passer plusieurs commandes
@@ -66,7 +66,7 @@ class Customer extends Model
         // Format local marocain : 0X XX XX XX XX -> on retire le 0 initial
         // et on préfixe l'indicatif international du Maroc.
         if (str_starts_with($digits, '0')) {
-            return '212' . substr($digits, 1);
+            return '212'.substr($digits, 1);
         }
 
         return $digits;

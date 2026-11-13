@@ -32,6 +32,7 @@ class StoreOrderRequest extends FormRequest
                 'required',
                 'integer',
                 'min:1',
+                'max:10000',
                 // La colonne products.stock_quantity est un entier NON SIGNÉ : sans
                 // ce contrôle, confirmer une commande dont la quantité dépasse le
                 // stock fait échouer la décrémentation au niveau SQL (erreur 500).
@@ -43,7 +44,7 @@ class StoreOrderRequest extends FormRequest
                     }
                 },
             ],
-            'delivery_fee' => ['required', 'numeric', 'min:0'],
+            'delivery_fee' => ['required', 'numeric', 'min:0', 'max:999999.99', 'decimal:0,2'],
         ];
     }
 

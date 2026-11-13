@@ -57,12 +57,14 @@
                             </div>
                             <div>
                                 <p class="text-sm font-medium text-slate-500 dark:text-gray-400">Total dépensé</p>
-                                <p class="text-2xl font-bold text-teal-600 dark:text-teal-400">{{ number_format($customer->orders->sum('total_amount'), 2) }} DH</p>
+                                <p class="text-2xl font-bold text-teal-600 dark:text-teal-400">{{ number_format($customer->orders->where('status', 'delivered')->sum('total_amount'), 2) }} DH</p>
                             </div>
                             @if($customer->orders->count() > 0)
                                 <div>
                                     <p class="text-sm font-medium text-slate-500 dark:text-gray-400">Taux de livraison</p>
-                                    @if($customer->delivery_rate < 50)
+                                    @if($customer->orders->isEmpty())
+                                        <p class="text-slate-500">Aucun historique</p>
+                                    @elseif($customer->delivery_rate < 50)
                                         <p class="text-2xl font-bold text-red-600 dark:text-red-400">{{ $customer->delivery_rate }}%</p>
                                         <span class="mt-1 inline-flex items-center px-2 py-0.5 bg-red-50 text-red-600 rounded-full text-xs font-medium dark:bg-red-900/25 dark:text-red-200">Risque élevé</span>
                                     @elseif($customer->delivery_rate < 80)

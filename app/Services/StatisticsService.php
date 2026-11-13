@@ -31,7 +31,7 @@ class StatisticsService
             'totalOrders' => $orders->count(),
             'pendingOrders' => $orders->where('status', 'pending')->count(),
             'lowStockProducts' => Product::where('stock_quantity', '<', 10)->count(),
-            'netProfit' => $this->computeNetProfit($delivered),
+            'productMargin' => $this->computeProductMargin($delivered),
             'chartLabels' => $ordersByDate->keys()->values()->all(),
             'chartData' => $ordersByDate->map->count()->values()->all(),
         ];
@@ -54,12 +54,11 @@ class StatisticsService
     }
 
     /**
-     * Bénéfice net = (prix de vente - prix d'achat) des produits livrés,
-     * moins les frais de livraison.
+     * Delivered product sales minus cost snapshots; excludes billed shipping and operating expenses.
      */
-    private function computeNetProfit(Collection $deliveredOrders): float
+    private function computeProductMargin(Collection $deliveredOrders): float
     {
-        $netProfit = 0;
+        $productMargin = 0;
 
         foreach ($deliveredOrders as $order) {
             $sellingTotal = 0;
@@ -67,12 +66,12 @@ class StatisticsService
 
             foreach ($order->products as $product) {
                 $sellingTotal += $product->pivot->quantity * $product->pivot->unit_price;
-                $purchaseTotal += $product->pivot->quantity * $product->purchase_price;
+                $purchaseTotal += $product->pivot->quantity * ($product->pivot->unit_cost ?? $product->purchase_price);
             }
 
-            $netProfit += $sellingTotal - $purchaseTotal - $order->delivery_fee;
+            $productMargin += $sellingTotal - $purchaseTotal;
         }
 
-        return $netProfit;
+        return round($productMargin, 2);
     }
 }

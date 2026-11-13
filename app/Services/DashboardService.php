@@ -45,7 +45,7 @@ class DashboardService
      */
     private function superAdminData(): array
     {
-        $monthlyRevenue = Order::whereMonth('created_at', now()->month)
+        $monthlyRevenue = Order::where('status', 'delivered')->whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year)
             ->sum('total_amount');
 
@@ -71,7 +71,7 @@ class DashboardService
     {
         $rows = DB::table('order_product')
             ->join('orders', 'orders.id', '=', 'order_product.order_id')
-            ->whereNotIn('orders.status', ['canceled', 'returned'])
+            ->where('orders.status', 'delivered')
             ->select('order_product.product_id', DB::raw('SUM(order_product.quantity) as units_sold'))
             ->groupBy('order_product.product_id')
             ->orderByDesc('units_sold')

@@ -27,7 +27,7 @@ class ProductFactory extends Factory
             // Le prix de vente est le prix d'achat multiplié par une marge (ex: x1.5)
             'selling_price' => $purchasePrice * fake()->randomFloat(2, 1.2, 2.0),
             'stock_quantity' => fake()->numberBetween(0, 100),
-            'shelf_location' => 'Rayon ' . fake()->randomElement(['A', 'B', 'C', 'D', 'E']) . '-' . str_pad((string) fake()->numberBetween(1, 20), 2, '0', STR_PAD_LEFT),
+            'shelf_location' => 'Rayon '.fake()->randomElement(['A', 'B', 'C', 'D', 'E']).'-'.str_pad((string) fake()->numberBetween(1, 20), 2, '0', STR_PAD_LEFT),
         ];
     }
 }

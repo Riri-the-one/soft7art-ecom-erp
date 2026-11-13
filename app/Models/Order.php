@@ -58,7 +58,7 @@ class Order extends Model
     // Contient plusieurs produits (Table Pivot)
     public function products()
     {
-        return $this->belongsToMany(Product::class)->withPivot('quantity', 'unit_price');
+        return $this->belongsToMany(Product::class)->withPivot('quantity', 'unit_price', 'unit_cost');
     }
 
     // Possède un historique des logs d'activité

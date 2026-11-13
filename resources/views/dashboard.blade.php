@@ -8,11 +8,11 @@
     <div class="py-6">
         <div class="max-w-full mx-auto sm:px-6 lg:px-8">
 
-            <div class="relative overflow-hidden bg-gradient-to-r from-indigo-600 to-violet-600 rounded-2xl shadow-lg p-8 mb-8 text-white w-full">
+            <div class="relative overflow-hidden bg-gradient-to-r from-indigo-600 to-violet-600 rounded-2xl shadow-lg p-5 sm:p-8 mb-8 text-white w-full">
                 <div class="pointer-events-none absolute -right-10 -top-16 h-56 w-56 rounded-full bg-white/10"></div>
                 <div class="pointer-events-none absolute -right-24 bottom-0 h-40 w-40 rounded-full bg-white/10"></div>
-                <h3 class="relative text-3xl font-bold mb-2">Bonjour, {{ auth()->user()->name }}</h3>
-                <p class="relative text-indigo-50 text-lg max-w-2xl">Votre ERP est prêt à piloter les ventes, la logistique et le suivi client avec une expérience moderne et fluide.</p>
+                <h3 class="relative text-2xl sm:text-3xl break-words font-bold mb-2">Bonjour, {{ auth()->user()->name }}</h3>
+                <p class="relative text-indigo-50 text-base sm:text-lg max-w-2xl">Votre ERP est prêt à piloter les ventes, la logistique et le suivi client avec une expérience moderne et fluide.</p>
             </div>
 
             @if(auth()->user()->role === 'super_admin' || auth()->user()->role === 'agent')

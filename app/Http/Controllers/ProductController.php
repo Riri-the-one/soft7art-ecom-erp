@@ -14,7 +14,7 @@ class ProductController extends Controller
         $query = Product::query();
 
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+            $query->where('name', 'like', '%'.$request->search.'%');
         }
 
         if ($request->query('alert') === 'true') {
@@ -22,7 +22,7 @@ class ProductController extends Controller
         }
 
         if ($request->query('stock') === 'critical') {
-            $query->where('stock_quantity', '<=', 5);
+            $query->where('stock_quantity', '<', 5);
         }
 
         $products = $query->paginate(10)->withQueryString();
@@ -37,6 +37,7 @@ class ProductController extends Controller
     public function alerts()
     {
         $products = Product::where('stock_quantity', '<', 10)->get();
+
         return view('products.alerts', compact('products'));
     }
 
@@ -83,6 +84,14 @@ class ProductController extends Controller
      * Étiquette imprimable : code-barres du produit + emplacement de rangement,
      * pour une préparation rapide au scan (téléphone ou douchette).
      */
+    public function destroy(Product $product)
+    {
+        $this->authorize('manage', Product::class);
+        $product->delete();
+
+        return redirect()->route('products.index')->with('success', 'Produit supprim?.');
+    }
+
     public function barcode(Product $product)
     {
         $this->authorize('manage', Product::class);

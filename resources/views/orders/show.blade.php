@@ -92,7 +92,9 @@
                                     <label for="status" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Statut actuel :</label>
                                     <select id="status" name="status" class="mt-2 block w-full rounded-lg border-slate-300 bg-white text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-slate-950 dark:border-slate-700 dark:text-gray-100">
                                         @foreach(['pending' => 'En attente', 'confirmed' => 'Confirmée', 'shipped' => 'Expédiée', 'delivered' => 'Livrée', 'returned' => 'Retournée', 'canceled' => 'Annulée'] as $value => $label)
+                                            @if($value === $order->status || in_array($value, \App\Services\OrderStatusService::TRANSITIONS[$order->status] ?? [], true))
                                             <option value="{{ $value }}" {{ $order->status === $value ? 'selected' : '' }}>{{ $label }}</option>
+                                            @endif
                                         @endforeach
                                     </select>
 

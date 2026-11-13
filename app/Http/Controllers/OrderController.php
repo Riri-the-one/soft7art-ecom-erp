@@ -8,11 +8,13 @@ use App\Mail\OrderConfirmedMail;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Product;
+use App\Services\OrderStatusService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\ValidationException;
 
 class OrderController extends Controller
 {
@@ -33,10 +35,10 @@ class OrderController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('id', 'like', '%' . $search . '%')
-                  ->orWhereHas('customer', function ($sub) use ($search) {
-                      $sub->where('name', 'like', '%' . $search . '%');
-                  });
+                $q->where('id', 'like', '%'.$search.'%')
+                    ->orWhereHas('customer', function ($sub) use ($search) {
+                        $sub->where('name', 'like', '%'.$search.'%');
+                    });
             });
         }
 
@@ -66,6 +68,7 @@ class OrderController extends Controller
     {
         $this->authorize('viewAny', Order::class);
         $orders = Order::with('customer')->latest()->get();
+
         return view('orders.kanban', compact('orders'));
     }
 
@@ -126,9 +129,13 @@ class OrderController extends Controller
     {
         $validated = $request->validated();
 
-        $product = Product::find($validated['product_id']);
-        $subtotal = $product->selling_price * $validated['quantity'];
-        $totalAmount = $subtotal + $validated['delivery_fee'];
+        $product = Product::findOrFail($validated['product_id']);
+        $totalCents = (int) round($product->selling_price * 100) * (int) $validated['quantity']
+            + (int) round($validated['delivery_fee'] * 100);
+        if ($totalCents > 9999999999) {
+            throw ValidationException::withMessages(['quantity' => 'Montant maximal de commande dépassé.']);
+        }
+        $totalAmount = $totalCents / 100;
 
         // La création de la commande et l'attachement du produit en pivot doivent
         // réussir ensemble : sans transaction, un échec sur le attach() laisserait
@@ -145,6 +152,7 @@ class OrderController extends Controller
             $order->products()->attach($validated['product_id'], [
                 'quantity' => $validated['quantity'],
                 'unit_price' => $product->selling_price,
+                'unit_cost' => $product->purchase_price,
             ]);
 
             return $order;
@@ -162,22 +170,15 @@ class OrderController extends Controller
         $oldStatus = $order->status;
         $newStatus = $validated['status'];
 
-        if ($oldStatus !== $newStatus) {
-            // Le changement de statut déclenche OrderObserver, qui décrémente ou
-            // restitue le stock des produits. Les deux opérations doivent réussir
-            // ensemble, sinon on se retrouve avec un statut à jour et un stock faux.
-            DB::transaction(function () use ($order, $newStatus) {
-                $order->status = $newStatus;
-                $order->save();
-            });
-
+        $changed = app(OrderStatusService::class)->transition($order, $newStatus);
+        if ($changed) {
             // L'e-mail est envoyé hors transaction et sans bloquer : une panne du
             // serveur SMTP ne doit pas annuler un changement de statut déjà validé.
             if ($newStatus === 'confirmed' && $order->customer && $order->customer->email) {
                 try {
                     Mail::to($order->customer->email)->send(new OrderConfirmedMail($order));
                 } catch (\Throwable $e) {
-                    Log::warning("Envoi de l'e-mail de confirmation échoué pour la commande {$order->id} : " . $e->getMessage());
+                    Log::warning("Envoi de l'e-mail de confirmation échoué pour la commande {$order->id} : ".$e->getMessage());
                 }
             }
         }
@@ -197,8 +198,9 @@ class OrderController extends Controller
 
         $order->load(['products', 'customer']);
 
-        $pdf = Pdf::setOption(['isRemoteEnabled' => true])->loadView('orders.invoice', compact('order'));
-        return $pdf->download('facture_commande_' . $order->id . '.pdf');
+        $pdf = Pdf::setOption(['isRemoteEnabled' => false])->loadView('orders.invoice', compact('order'));
+
+        return $pdf->download('facture_commande_'.$order->id.'.pdf');
     }
 
     /**
@@ -228,6 +230,11 @@ class OrderController extends Controller
         return view('orders.track', compact('order'));
     }
 
+    private static function csvCell(string $value): string
+    {
+        return preg_match('/^[\\s]*[=+@-]/u', $value) ? "'".$value : $value;
+    }
+
     public function exportCsv()
     {
         $headers = [
@@ -246,7 +253,7 @@ class OrderController extends Controller
             foreach (Order::with('customer')->lazy() as $order) {
                 fputcsv($handle, [
                     $order->id,
-                    $order->customer->name ?? '',
+                    self::csvCell($order->customer->name ?? ''),
                     number_format($order->total_amount, 2, '.', ''),
                     $order->status,
                     $order->created_at->format('Y-m-d H:i:s'),
@@ -268,7 +275,7 @@ class OrderController extends Controller
     {
         $headers = [
             'Content-Type' => 'text/csv; charset=UTF-8',
-            'Content-Disposition' => 'attachment; filename="export_logistique_' . now()->format('Y-m-d') . '.csv"',
+            'Content-Disposition' => 'attachment; filename="export_logistique_'.now()->format('Y-m-d').'.csv"',
         ];
 
         $callback = function () {
@@ -288,16 +295,16 @@ class OrderController extends Controller
             foreach ($orders as $order) {
                 $customer = $order->customer;
                 $designation = $order->products->map(function ($product) {
-                    return $product->name . ' x' . $product->pivot->quantity;
+                    return $product->name.' x'.$product->pivot->quantity;
                 })->implode(' + ');
 
                 fputcsv($handle, [
-                    'CMD-' . $order->id,
-                    $customer->name ?? '',
-                    $customer->phone ?? '',
-                    $customer->city ?? '',
-                    $customer->address ?? '',
-                    $designation,
+                    'CMD-'.$order->id,
+                    self::csvCell($customer->name ?? ''),
+                    self::csvCell($customer->phone ?? ''),
+                    self::csvCell($customer->city ?? ''),
+                    self::csvCell($customer->address ?? ''),
+                    self::csvCell($designation),
                     $order->products->sum('pivot.quantity'),
                     number_format($order->total_amount, 2, '.', ''),
                     '',

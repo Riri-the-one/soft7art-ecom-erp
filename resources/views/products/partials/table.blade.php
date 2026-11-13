@@ -1,5 +1,5 @@
-<tbody>
-    @foreach($products as $product)
+
+    @forelse($products as $product)
         @php
             $stockPercent = min(100, max(0, $product->stock_quantity));
             $stockColor = $product->isStockCritical() ? 'bg-rose-500' : ($product->stock_quantity < 25 ? 'bg-amber-500' : 'bg-emerald-500');
@@ -33,6 +33,11 @@
             @if(Auth::user()->hasRole('stock_manager') || Auth::user()->hasRole('super_admin'))
                 <td class="p-3">
                     <div class="inline-flex items-center gap-3">
+                        <form method="POST" action="{{ route('products.destroy', $product) }}" onsubmit="return confirm('Supprimer ce produit sans historique ?')">
+                            @csrf
+                            @method('DELETE')
+                            <button class="text-xs text-rose-600" type="submit">Supprimer</button>
+                        </form>
                         <a href="{{ route('products.edit', $product) }}" class="inline-flex items-center text-xs text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 font-medium">Modifier</a>
                         <a href="{{ route('products.barcode', $product) }}" target="_blank" title="Imprimer le code-barres" class="inline-flex items-center text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400">
                             <i data-lucide="scan-barcode" class="h-4 w-4"></i>
@@ -41,5 +46,6 @@
                 </td>
             @endif
         </tr>
-    @endforeach
-</tbody>
+    @empty
+        <tr><td colspan="5" class="p-6 text-center text-slate-500">Aucun produit trouvé.</td></tr>
+    @endforelse

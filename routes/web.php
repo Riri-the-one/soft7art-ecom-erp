@@ -12,14 +12,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified', 'role:super_admin,agent,stock_manager'])->name('dashboard');
 
 // Page de suivi publique (non-authentifiée) : le lien complet contient un token
 // unique et imprévisible qui fait office d'autorisation, donc pas besoin de login.
 Route::get('/suivi/{order}/{token}', [OrderController::class, 'track'])->name('orders.track');
 
 // Le grand groupe de sécurité : il faut être connecté pour voir tout ça
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'role:super_admin,agent,stock_manager'])->group(function () {
 
     // --- 1. ROUTES DU CATALOGUE ---
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
@@ -29,6 +29,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
         Route::post('/products', [ProductController::class, 'store'])->name('products.store');
         Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
+        Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
         Route::patch('/products/{product}', [ProductController::class, 'update'])->name('products.update');
         Route::get('/products/{product}/barcode', [ProductController::class, 'barcode'])->name('products.barcode');
     });

@@ -12,7 +12,7 @@
                 <th class="p-3 font-semibold text-slate-500 text-xs uppercase tracking-wider dark:text-slate-400 text-center">Actions</th>
             </tr>
         </thead>
-        <tbody>
+
             @forelse($orders as $order)
                 <tr class="border-b border-slate-200 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800 transition-colors">
                     <td class="p-3 font-semibold text-slate-900 dark:text-gray-200">
@@ -74,7 +74,7 @@
                     </td>
                 </tr>
             @endforelse
-        </tbody>
+
     </table>
 </div>
 

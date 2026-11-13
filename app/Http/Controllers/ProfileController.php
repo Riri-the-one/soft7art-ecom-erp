@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\OrderActivityLog;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -47,6 +48,8 @@ class ProfileController extends Controller
         ]);
 
         $user = $request->user();
+
+        abort_if($user->orders()->exists() || OrderActivityLog::where('user_id', $user->id)->exists(), 409, 'Ce compte possède un historique de commandes.');
 
         Auth::logout();
 
